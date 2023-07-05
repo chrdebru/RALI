@@ -6,8 +6,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -37,15 +37,16 @@ public class Main {
 //			execute("STUDENTS JOIN ENROLLMENTS");
 //			execute("STUDENTS JOIN ENROLLMENTS JOIN COURSES");
 //			execute("STUDENTS JOIN COURSES");			
-//			execute("STUDENTS TIMES STUDENTS2");
-//			execute("(STUDENTS TIMES ENROLLMENTS)");
-//			execute("STUDENTS TIMES ENROLLMENTS TIMES COURSES");
-//			execute("STUDENTS TIMES COURSES");
+			execute("STUDENTS TIMES STUDENTS2");
+			execute("(STUDENTS TIMES ENROLLMENTS)");
+			execute("STUDENTS TIMES ENROLLMENTS TIMES COURSES");
+			//execute("STUDENTS TIMES COURSES");
 
 			//execute("STUDENTS MINUS STUDENTS2");
 			//execute("STUDENTS2 MINUS STUDENTS");
-			execute("STUDENTS MINUS STUDENTS TIMES STUDENTS");
-			
+			//execute("(STUDENTS UNION STUDENTS2) MINUS STUDENTS");
+			//execute("STUDENTS UNION STUDENTS2 MINUS STUDENTS");
+			//execute("ENROLLMENTS DIVIDES DIVTEST");
 			
 
 //			Scanner commands = new Scanner(System.in);
@@ -61,6 +62,7 @@ public class Main {
 		} catch (Exception e) {
 			System.err.printf("Encountered error: %s", e.getMessage());
 			System.err.println(e);
+			e.printStackTrace();
 			System.err.println("Termninating program.");
 		}
 
@@ -72,24 +74,16 @@ public class Main {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		RALIParser parser = new RALIParser(tokens);
 		ParseTree tree = parser.expression();
-		RALIVisitorImp visitor = new RALIVisitorImp();
+		RALIVisitorImp visitor = new RALIVisitorImp(connection);
 		String instruction = visitor.visit(tree);
 		
 		if(instruction == null)
 			return;
 		
 		try {
-			System.err.println(instruction);
+			//System.err.println(instruction);
+			checkConstainsError(instruction);
 			ResultSet rs = connection.createStatement().executeQuery(instruction);
-			
-			// We do not allow attributes with the same name in the final relation
-			ArrayList<String> names = new ArrayList<String>();
-			for(int i = 1; i <= rs.getMetaData().getColumnCount(); i++)
-				names.add(rs.getMetaData().getColumnName(i));
-			
-			if(names.size() > new HashSet<String>(names).size())
-				throw new JdbcSQLSyntaxErrorException("", "", "", 42121, null, "");
-			
 			System.out.println(Util.toASCIITable(rs));
 		} catch (JdbcSQLSyntaxErrorException e) {
 			switch (e.getErrorCode()) {
@@ -106,9 +100,20 @@ public class Main {
 				default:
 					System.out.println("Something went wrong.");
 			}
-			System.out.println(e.getErrorCode());
+			
+		} catch(Exception e) {
+			String msg = e.getMessage();
+			msg = msg.replace("Syntax error in SQL statement \"[*][[ERROR: ", "");
+			System.out.println(msg);
 		}
 		
+	}
+
+	private static void checkConstainsError(String instruction) throws Exception {
+		Pattern pattern = Pattern.compile("\\[\\[ERROR: (.*)\\]\\]", Pattern.CASE_INSENSITIVE);
+	    Matcher matcher = pattern.matcher(instruction);
+	    if(matcher.find())
+	    	throw new Exception(matcher.group(1));
 	}
 
 	private static void createDatabaseAndLoadData() throws Exception {

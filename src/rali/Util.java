@@ -32,6 +32,12 @@ public class Util {
 			}
 			records.add(record);
 		}
+		
+		// If the result set is empty, then only show the headers
+		if(records.size() == 0) {
+			Object[][] tmp = { headers };
+			return AsciiTable.getTable(tmp);
+		}
 
 		return AsciiTable.getTable(headers, records.toArray(new Object[1][1]));
 	}
