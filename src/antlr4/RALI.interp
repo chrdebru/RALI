@@ -1,11 +1,11 @@
 token literal names:
 null
-'TIMES'
+'PRODUCT'
 'UNION'
-'INTERSECT'
-'DIVIDES'
+'INTERSECTION'
+'DIVISION'
 'JOIN'
-'MINUS'
+'DIFFERENCE'
 '('
 ')'
 null

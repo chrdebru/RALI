@@ -8,12 +8,13 @@ start : expression ;
 
 expression 
 	: LABEL														# Relation 
-	| left=expression operator='TIMES' right=expression			# CartesianProduct
+//	| inlinerelation											# InlineRelation
+	| left=expression operator='PRODUCT' right=expression		# CartesianProduct
 	| left=expression operator='UNION' right=expression 		# Union
-	| left=expression operator='INTERSECT' right=expression 	# Intersection
-	| left=expression operator='DIVIDES' right=expression		# Division
+	| left=expression operator='INTERSECTION' right=expression 	# Intersection
+	| left=expression operator='DIVISION' right=expression		# Division
 	| left=expression operator='JOIN' right=expression 			# NaturalJoin
-	| left=expression operator='MINUS' right=expression 		# Difference
+	| left=expression operator='DIFFERENCE' right=expression 	# Difference
 	| '(' expression ')'										# Parens
 	;
 
@@ -21,7 +22,7 @@ expression
  * Lexer Rules
  */
  
-RESERVED 	: 'TIMES' | 'DIVIDES' | 'UNION' | 'UNION' | 'INTERSECT' | 'MINUS' ;
+RESERVED 	: 'TIMES' | 'DIVISION' | 'INTERSECTION' | 'UNION' | 'PRODUCT' | 'DIFFERENCE' ;
 
 NUMBER : [0-9]+;
 LABEL : [A-Z] ([A-Z] | [0-9])*;

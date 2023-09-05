@@ -1,4 +1,3 @@
-// Generated from c:\Users\chris\eclipse-workspace-2\RALI\src\antlr4\RALI.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;

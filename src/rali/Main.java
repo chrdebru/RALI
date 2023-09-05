@@ -28,25 +28,7 @@ public class Main {
 		try {
 			createDatabaseAndLoadData();
 			
-//			execute("STUDENTS");
-//			execute("(COURSES)");
-//			execute("STUDENTS UNION STUDENTS2");
-//			execute("(STUDENTS UNION STUDENTS2)");
-//			execute("STUDENTS INTERSECT STUDENTS2");
-//			execute("STUDENTS JOIN STUDENTS2");
-//			execute("STUDENTS JOIN ENROLLMENTS");
-//			execute("STUDENTS JOIN ENROLLMENTS JOIN COURSES");
-//			execute("STUDENTS JOIN COURSES");			
-			execute("STUDENTS TIMES STUDENTS2");
-			execute("(STUDENTS TIMES ENROLLMENTS)");
-			execute("STUDENTS TIMES ENROLLMENTS TIMES COURSES");
-			//execute("STUDENTS TIMES COURSES");
-
-			//execute("STUDENTS MINUS STUDENTS2");
-			//execute("STUDENTS2 MINUS STUDENTS");
-			//execute("(STUDENTS UNION STUDENTS2) MINUS STUDENTS");
-			//execute("STUDENTS UNION STUDENTS2 MINUS STUDENTS");
-			//execute("ENROLLMENTS DIVIDES DIVTEST");
+			execute("ENROLLMENTS DIVIDES DIVTEST");
 			
 
 //			Scanner commands = new Scanner(System.in);

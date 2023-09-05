@@ -30,8 +30,8 @@ public class RALIParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'TIMES'", "'UNION'", "'INTERSECT'", "'DIVIDES'", "'JOIN'", "'MINUS'", 
-			"'('", "')'"
+			null, "'PRODUCT'", "'UNION'", "'INTERSECTION'", "'DIVISION'", "'JOIN'", 
+			"'DIFFERENCE'", "'('", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
