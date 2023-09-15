@@ -19,6 +19,7 @@ import antlr4.RALIParser.IntersectionContext;
 import antlr4.RALIParser.NaturalJoinContext;
 import antlr4.RALIParser.ParensContext;
 import antlr4.RALIParser.RelationContext;
+import antlr4.RALIParser.StatementContext;
 import antlr4.RALIParser.TupleContext;
 import antlr4.RALIParser.UnionContext;
 
@@ -29,9 +30,6 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	
 	private static List<String> attributes;
 	private static List<String> attributetypes;
-	
-	private static List<List<String>> tuples;
-	private static List<String> tuple;
 	
 	private static Map<String, String> types = new HashMap<String, String>();
 	
@@ -52,7 +50,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	@Override
 	public String visitRelation(RelationContext ctx) {
 		String relation = ctx.getText();
-		return String.format("(SELECT * FROM %s)", relation);
+		return String.format("(SELECT DISTINCT * FROM %s)", relation);
 	}
 	
 	private static String error = null;
@@ -65,7 +63,6 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		count++;
 		attributes = new ArrayList<String>();
 		attributetypes = new ArrayList<String>();
-		tuples = new ArrayList<List<String>>();
 		error = null;
 		sql = "";
 		
@@ -78,7 +75,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 			connection.createStatement().execute(create + sql);
 			
 			if (error == null)
-				return "TABLE" + count;
+				return String.format("(SELECT DISTINCT * FROM TABLE%s)", count);
 			
 			return error;
 		} catch (SQLException e) {
@@ -97,7 +94,6 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 
 	@Override
 	public String visitTuple(TupleContext ctx) {
-		tuple = new ArrayList<String>();
 		int size = attributes.size();
 		List<String> values = ctx.values.stream().map(v -> v.getText()).toList();
 		
@@ -124,12 +120,6 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		
 		return super.visitTuple(ctx);
 	}
-
-//	@Override
-//	public String visitValue(ValueContext ctx) {
-//		tuple.ctx.getText());
-//		return super.visitValue(ctx);
-//	}
 
 	@Override
 	public String visitUnion(UnionContext ctx) {
@@ -250,6 +240,24 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 			
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}
+	}
+	
+	@Override
+	public String visitStatement(StatementContext ctx) {
+		String query = visit(ctx.expression());
+
+		if(ctx.label == null)
+			return query;
+		
+		try {
+			String viewname = ctx.label.getText();
+			String sql = String.format("CREATE VIEW %s AS %s", viewname, query);
+			connection.createStatement().execute(sql);
+			return String.format("(SELECT DISTINCT * FROM %s)", viewname);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
 		}
 	}
 

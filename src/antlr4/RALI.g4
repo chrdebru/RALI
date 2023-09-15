@@ -4,7 +4,10 @@ grammar RALI;
  * Parser Rules
  */
 
-start : expression ;
+statement 
+	: label=LABEL '=' expression								# Statement
+	| expression												# Expression		
+;
 
 expression 
 	: LABEL														# Relation 

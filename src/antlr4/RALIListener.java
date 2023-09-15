@@ -8,15 +8,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface RALIListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link RALIParser#start}.
+	 * Enter a parse tree produced by {@link RALIParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStart(RALIParser.StartContext ctx);
+	void enterStatement(RALIParser.StatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RALIParser#start}.
+	 * Exit a parse tree produced by {@link RALIParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStart(RALIParser.StartContext ctx);
+	void exitStatement(RALIParser.StatementContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Intersection}
 	 * labeled alternative in {@link RALIParser#expression}.

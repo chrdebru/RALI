@@ -19,31 +19,31 @@ public class RALIParser extends Parser {
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
-		T__17=18, RESERVED=19, LABEL=20, INTEGER=21, DECIMAL=22, STRING=23, DATE=24, 
-		WHITESPACE=25;
+		T__17=18, T__18=19, RESERVED=20, LABEL=21, INTEGER=22, DECIMAL=23, STRING=24, 
+		DATE=25, WHITESPACE=26;
 	public static final int
-		RULE_start = 0, RULE_expression = 1, RULE_inlinerelation = 2, RULE_attribute = 3, 
+		RULE_statement = 0, RULE_expression = 1, RULE_inlinerelation = 2, RULE_attribute = 3, 
 		RULE_tuple = 4, RULE_value = 5;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"start", "expression", "inlinerelation", "attribute", "tuple", "value"
+			"statement", "expression", "inlinerelation", "attribute", "tuple", "value"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'PRODUCT'", "'UNION'", "'INTERSECTION'", "'DIVISION'", "'JOIN'", 
-			"'DIFFERENCE'", "'('", "')'", "'['", "','", "']'", "'{'", "'}'", "':'", 
-			"'STRING'", "'INTEGER'", "'DECIMAL'", "'DATE'"
+			null, "'='", "'PRODUCT'", "'UNION'", "'INTERSECTION'", "'DIVISION'", 
+			"'JOIN'", "'DIFFERENCE'", "'('", "')'", "'['", "','", "']'", "'{'", "'}'", 
+			"':'", "'STRING'", "'INTEGER'", "'DECIMAL'", "'DATE'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, "RESERVED", "LABEL", "INTEGER", 
-			"DECIMAL", "STRING", "DATE", "WHITESPACE"
+			null, null, null, null, null, null, null, null, "RESERVED", "LABEL", 
+			"INTEGER", "DECIMAL", "STRING", "DATE", "WHITESPACE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -98,36 +98,50 @@ public class RALIParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class StartContext extends ParserRuleContext {
+	public static class StatementContext extends ParserRuleContext {
+		public Token label;
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public StartContext(ParserRuleContext parent, int invokingState) {
+		public TerminalNode LABEL() { return getToken(RALIParser.LABEL, 0); }
+		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_start; }
+		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof RALIListener ) ((RALIListener)listener).enterStart(this);
+			if ( listener instanceof RALIListener ) ((RALIListener)listener).enterStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof RALIListener ) ((RALIListener)listener).exitStart(this);
+			if ( listener instanceof RALIListener ) ((RALIListener)listener).exitStatement(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof RALIVisitor ) return ((RALIVisitor<? extends T>)visitor).visitStart(this);
+			if ( visitor instanceof RALIVisitor ) return ((RALIVisitor<? extends T>)visitor).visitStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final StartContext start() throws RecognitionException {
-		StartContext _localctx = new StartContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_start);
+	public final StatementContext statement() throws RecognitionException {
+		StatementContext _localctx = new StatementContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_statement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(12);
+			setState(14);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
+			case 1:
+				{
+				setState(12);
+				((StatementContext)_localctx).label = match(LABEL);
+				setState(13);
+				match(T__0);
+				}
+				break;
+			}
+			setState(16);
 			expression(0);
 			}
 		}
@@ -384,7 +398,7 @@ public class RALIParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(21);
+			setState(25);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LABEL:
@@ -393,57 +407,57 @@ public class RALIParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(15);
+				setState(19);
 				match(LABEL);
 				}
 				break;
-			case T__8:
+			case T__9:
 				{
 				_localctx = new ConstantContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(16);
+				setState(20);
 				inlinerelation();
 				}
 				break;
-			case T__6:
+			case T__7:
 				{
 				_localctx = new ParensContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(17);
-				match(T__6);
-				setState(18);
-				expression(0);
-				setState(19);
+				setState(21);
 				match(T__7);
+				setState(22);
+				expression(0);
+				setState(23);
+				match(T__8);
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(43);
+			setState(47);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(41);
+					setState(45);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 					case 1:
 						{
 						_localctx = new CartesianProductContext(new ExpressionContext(_parentctx, _parentState));
 						((CartesianProductContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(23);
+						setState(27);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(24);
-						((CartesianProductContext)_localctx).operator = match(T__0);
-						setState(25);
+						setState(28);
+						((CartesianProductContext)_localctx).operator = match(T__1);
+						setState(29);
 						((CartesianProductContext)_localctx).right = expression(8);
 						}
 						break;
@@ -452,11 +466,11 @@ public class RALIParser extends Parser {
 						_localctx = new UnionContext(new ExpressionContext(_parentctx, _parentState));
 						((UnionContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(26);
+						setState(30);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(27);
-						((UnionContext)_localctx).operator = match(T__1);
-						setState(28);
+						setState(31);
+						((UnionContext)_localctx).operator = match(T__2);
+						setState(32);
 						((UnionContext)_localctx).right = expression(7);
 						}
 						break;
@@ -465,11 +479,11 @@ public class RALIParser extends Parser {
 						_localctx = new IntersectionContext(new ExpressionContext(_parentctx, _parentState));
 						((IntersectionContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(29);
+						setState(33);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(30);
-						((IntersectionContext)_localctx).operator = match(T__2);
-						setState(31);
+						setState(34);
+						((IntersectionContext)_localctx).operator = match(T__3);
+						setState(35);
 						((IntersectionContext)_localctx).right = expression(6);
 						}
 						break;
@@ -478,11 +492,11 @@ public class RALIParser extends Parser {
 						_localctx = new DivisionContext(new ExpressionContext(_parentctx, _parentState));
 						((DivisionContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(32);
+						setState(36);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(33);
-						((DivisionContext)_localctx).operator = match(T__3);
-						setState(34);
+						setState(37);
+						((DivisionContext)_localctx).operator = match(T__4);
+						setState(38);
 						((DivisionContext)_localctx).right = expression(5);
 						}
 						break;
@@ -491,11 +505,11 @@ public class RALIParser extends Parser {
 						_localctx = new NaturalJoinContext(new ExpressionContext(_parentctx, _parentState));
 						((NaturalJoinContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(35);
+						setState(39);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(36);
-						((NaturalJoinContext)_localctx).operator = match(T__4);
-						setState(37);
+						setState(40);
+						((NaturalJoinContext)_localctx).operator = match(T__5);
+						setState(41);
 						((NaturalJoinContext)_localctx).right = expression(4);
 						}
 						break;
@@ -504,20 +518,20 @@ public class RALIParser extends Parser {
 						_localctx = new DifferenceContext(new ExpressionContext(_parentctx, _parentState));
 						((DifferenceContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(38);
+						setState(42);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(39);
-						((DifferenceContext)_localctx).operator = match(T__5);
-						setState(40);
+						setState(43);
+						((DifferenceContext)_localctx).operator = match(T__6);
+						setState(44);
 						((DifferenceContext)_localctx).right = expression(3);
 						}
 						break;
 					}
 					} 
 				}
-				setState(45);
+				setState(49);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
 			}
 		}
@@ -576,54 +590,54 @@ public class RALIParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(46);
-			match(T__8);
-			setState(47);
+			setState(50);
+			match(T__9);
+			setState(51);
 			((InlinerelationContext)_localctx).attribute = attribute();
 			((InlinerelationContext)_localctx).attributes.add(((InlinerelationContext)_localctx).attribute);
-			setState(52);
+			setState(56);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__9) {
+			while (_la==T__10) {
 				{
 				{
-				setState(48);
-				match(T__9);
-				setState(49);
+				setState(52);
+				match(T__10);
+				setState(53);
 				((InlinerelationContext)_localctx).attribute = attribute();
 				((InlinerelationContext)_localctx).attributes.add(((InlinerelationContext)_localctx).attribute);
 				}
 				}
-				setState(54);
+				setState(58);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(55);
-			match(T__10);
-			setState(56);
+			setState(59);
 			match(T__11);
-			setState(57);
+			setState(60);
+			match(T__12);
+			setState(61);
 			((InlinerelationContext)_localctx).tuple = tuple();
 			((InlinerelationContext)_localctx).tuples.add(((InlinerelationContext)_localctx).tuple);
-			setState(62);
+			setState(66);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__9) {
+			while (_la==T__10) {
 				{
 				{
-				setState(58);
-				match(T__9);
-				setState(59);
+				setState(62);
+				match(T__10);
+				setState(63);
 				((InlinerelationContext)_localctx).tuple = tuple();
 				((InlinerelationContext)_localctx).tuples.add(((InlinerelationContext)_localctx).tuple);
 				}
 				}
-				setState(64);
+				setState(68);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(65);
-			match(T__12);
+			setState(69);
+			match(T__13);
 			}
 		}
 		catch (RecognitionException re) {
@@ -668,19 +682,19 @@ public class RALIParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(67);
+			setState(71);
 			((AttributeContext)_localctx).label = match(LABEL);
-			setState(70);
+			setState(74);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__13) {
+			if (_la==T__14) {
 				{
-				setState(68);
-				match(T__13);
-				setState(69);
+				setState(72);
+				match(T__14);
+				setState(73);
 				((AttributeContext)_localctx).type = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 491520L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 983040L) != 0)) ) {
 					((AttributeContext)_localctx).type = (Token)_errHandler.recoverInline(this);
 				}
 				else {
@@ -740,30 +754,30 @@ public class RALIParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(72);
-			match(T__6);
-			setState(73);
+			setState(76);
+			match(T__7);
+			setState(77);
 			((TupleContext)_localctx).value = value();
 			((TupleContext)_localctx).values.add(((TupleContext)_localctx).value);
-			setState(78);
+			setState(82);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__9) {
+			while (_la==T__10) {
 				{
 				{
-				setState(74);
-				match(T__9);
-				setState(75);
+				setState(78);
+				match(T__10);
+				setState(79);
 				((TupleContext)_localctx).value = value();
 				((TupleContext)_localctx).values.add(((TupleContext)_localctx).value);
 				}
 				}
-				setState(80);
+				setState(84);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(81);
-			match(T__7);
+			setState(85);
+			match(T__8);
 			}
 		}
 		catch (RecognitionException re) {
@@ -809,9 +823,9 @@ public class RALIParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83);
+			setState(87);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 31457280L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 62914560L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -858,58 +872,61 @@ public class RALIParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0019V\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u001aZ\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0003\u0001\u0016"+
-		"\b\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
+		"\u0005\u0007\u0005\u0001\u0000\u0001\u0000\u0003\u0000\u000f\b\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0003\u0001\u001a\b\u0001\u0001\u0001\u0001"+
 		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
 		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0001\u0005\u0001*\b\u0001\n\u0001\f\u0001-\t\u0001\u0001\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0005\u00023\b\u0002\n\u0002\f\u00026\t"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0005"+
-		"\u0002=\b\u0002\n\u0002\f\u0002@\t\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0003\u0001\u0003\u0001\u0003\u0003\u0003G\b\u0003\u0001\u0004\u0001"+
-		"\u0004\u0001\u0004\u0001\u0004\u0005\u0004M\b\u0004\n\u0004\f\u0004P\t"+
-		"\u0004\u0001\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0000"+
-		"\u0001\u0002\u0006\u0000\u0002\u0004\u0006\b\n\u0000\u0002\u0001\u0000"+
-		"\u000f\u0012\u0001\u0000\u0015\u0018[\u0000\f\u0001\u0000\u0000\u0000"+
-		"\u0002\u0015\u0001\u0000\u0000\u0000\u0004.\u0001\u0000\u0000\u0000\u0006"+
-		"C\u0001\u0000\u0000\u0000\bH\u0001\u0000\u0000\u0000\nS\u0001\u0000\u0000"+
-		"\u0000\f\r\u0003\u0002\u0001\u0000\r\u0001\u0001\u0000\u0000\u0000\u000e"+
-		"\u000f\u0006\u0001\uffff\uffff\u0000\u000f\u0016\u0005\u0014\u0000\u0000"+
-		"\u0010\u0016\u0003\u0004\u0002\u0000\u0011\u0012\u0005\u0007\u0000\u0000"+
-		"\u0012\u0013\u0003\u0002\u0001\u0000\u0013\u0014\u0005\b\u0000\u0000\u0014"+
-		"\u0016\u0001\u0000\u0000\u0000\u0015\u000e\u0001\u0000\u0000\u0000\u0015"+
-		"\u0010\u0001\u0000\u0000\u0000\u0015\u0011\u0001\u0000\u0000\u0000\u0016"+
-		"+\u0001\u0000\u0000\u0000\u0017\u0018\n\u0007\u0000\u0000\u0018\u0019"+
-		"\u0005\u0001\u0000\u0000\u0019*\u0003\u0002\u0001\b\u001a\u001b\n\u0006"+
-		"\u0000\u0000\u001b\u001c\u0005\u0002\u0000\u0000\u001c*\u0003\u0002\u0001"+
-		"\u0007\u001d\u001e\n\u0005\u0000\u0000\u001e\u001f\u0005\u0003\u0000\u0000"+
-		"\u001f*\u0003\u0002\u0001\u0006 !\n\u0004\u0000\u0000!\"\u0005\u0004\u0000"+
-		"\u0000\"*\u0003\u0002\u0001\u0005#$\n\u0003\u0000\u0000$%\u0005\u0005"+
-		"\u0000\u0000%*\u0003\u0002\u0001\u0004&\'\n\u0002\u0000\u0000\'(\u0005"+
-		"\u0006\u0000\u0000(*\u0003\u0002\u0001\u0003)\u0017\u0001\u0000\u0000"+
-		"\u0000)\u001a\u0001\u0000\u0000\u0000)\u001d\u0001\u0000\u0000\u0000)"+
-		" \u0001\u0000\u0000\u0000)#\u0001\u0000\u0000\u0000)&\u0001\u0000\u0000"+
-		"\u0000*-\u0001\u0000\u0000\u0000+)\u0001\u0000\u0000\u0000+,\u0001\u0000"+
-		"\u0000\u0000,\u0003\u0001\u0000\u0000\u0000-+\u0001\u0000\u0000\u0000"+
-		"./\u0005\t\u0000\u0000/4\u0003\u0006\u0003\u000001\u0005\n\u0000\u0000"+
-		"13\u0003\u0006\u0003\u000020\u0001\u0000\u0000\u000036\u0001\u0000\u0000"+
-		"\u000042\u0001\u0000\u0000\u000045\u0001\u0000\u0000\u000057\u0001\u0000"+
-		"\u0000\u000064\u0001\u0000\u0000\u000078\u0005\u000b\u0000\u000089\u0005"+
-		"\f\u0000\u00009>\u0003\b\u0004\u0000:;\u0005\n\u0000\u0000;=\u0003\b\u0004"+
-		"\u0000<:\u0001\u0000\u0000\u0000=@\u0001\u0000\u0000\u0000><\u0001\u0000"+
-		"\u0000\u0000>?\u0001\u0000\u0000\u0000?A\u0001\u0000\u0000\u0000@>\u0001"+
-		"\u0000\u0000\u0000AB\u0005\r\u0000\u0000B\u0005\u0001\u0000\u0000\u0000"+
-		"CF\u0005\u0014\u0000\u0000DE\u0005\u000e\u0000\u0000EG\u0007\u0000\u0000"+
-		"\u0000FD\u0001\u0000\u0000\u0000FG\u0001\u0000\u0000\u0000G\u0007\u0001"+
-		"\u0000\u0000\u0000HI\u0005\u0007\u0000\u0000IN\u0003\n\u0005\u0000JK\u0005"+
-		"\n\u0000\u0000KM\u0003\n\u0005\u0000LJ\u0001\u0000\u0000\u0000MP\u0001"+
-		"\u0000\u0000\u0000NL\u0001\u0000\u0000\u0000NO\u0001\u0000\u0000\u0000"+
-		"OQ\u0001\u0000\u0000\u0000PN\u0001\u0000\u0000\u0000QR\u0005\b\u0000\u0000"+
-		"R\t\u0001\u0000\u0000\u0000ST\u0007\u0001\u0000\u0000T\u000b\u0001\u0000"+
-		"\u0000\u0000\u0007\u0015)+4>FN";
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005\u0001.\b"+
+		"\u0001\n\u0001\f\u00011\t\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
+		"\u0002\u0005\u00027\b\u0002\n\u0002\f\u0002:\t\u0002\u0001\u0002\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0005\u0002A\b\u0002\n\u0002"+
+		"\f\u0002D\t\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001"+
+		"\u0003\u0003\u0003K\b\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0001"+
+		"\u0004\u0005\u0004Q\b\u0004\n\u0004\f\u0004T\t\u0004\u0001\u0004\u0001"+
+		"\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0000\u0001\u0002\u0006\u0000"+
+		"\u0002\u0004\u0006\b\n\u0000\u0002\u0001\u0000\u0010\u0013\u0001\u0000"+
+		"\u0016\u0019`\u0000\u000e\u0001\u0000\u0000\u0000\u0002\u0019\u0001\u0000"+
+		"\u0000\u0000\u00042\u0001\u0000\u0000\u0000\u0006G\u0001\u0000\u0000\u0000"+
+		"\bL\u0001\u0000\u0000\u0000\nW\u0001\u0000\u0000\u0000\f\r\u0005\u0015"+
+		"\u0000\u0000\r\u000f\u0005\u0001\u0000\u0000\u000e\f\u0001\u0000\u0000"+
+		"\u0000\u000e\u000f\u0001\u0000\u0000\u0000\u000f\u0010\u0001\u0000\u0000"+
+		"\u0000\u0010\u0011\u0003\u0002\u0001\u0000\u0011\u0001\u0001\u0000\u0000"+
+		"\u0000\u0012\u0013\u0006\u0001\uffff\uffff\u0000\u0013\u001a\u0005\u0015"+
+		"\u0000\u0000\u0014\u001a\u0003\u0004\u0002\u0000\u0015\u0016\u0005\b\u0000"+
+		"\u0000\u0016\u0017\u0003\u0002\u0001\u0000\u0017\u0018\u0005\t\u0000\u0000"+
+		"\u0018\u001a\u0001\u0000\u0000\u0000\u0019\u0012\u0001\u0000\u0000\u0000"+
+		"\u0019\u0014\u0001\u0000\u0000\u0000\u0019\u0015\u0001\u0000\u0000\u0000"+
+		"\u001a/\u0001\u0000\u0000\u0000\u001b\u001c\n\u0007\u0000\u0000\u001c"+
+		"\u001d\u0005\u0002\u0000\u0000\u001d.\u0003\u0002\u0001\b\u001e\u001f"+
+		"\n\u0006\u0000\u0000\u001f \u0005\u0003\u0000\u0000 .\u0003\u0002\u0001"+
+		"\u0007!\"\n\u0005\u0000\u0000\"#\u0005\u0004\u0000\u0000#.\u0003\u0002"+
+		"\u0001\u0006$%\n\u0004\u0000\u0000%&\u0005\u0005\u0000\u0000&.\u0003\u0002"+
+		"\u0001\u0005\'(\n\u0003\u0000\u0000()\u0005\u0006\u0000\u0000).\u0003"+
+		"\u0002\u0001\u0004*+\n\u0002\u0000\u0000+,\u0005\u0007\u0000\u0000,.\u0003"+
+		"\u0002\u0001\u0003-\u001b\u0001\u0000\u0000\u0000-\u001e\u0001\u0000\u0000"+
+		"\u0000-!\u0001\u0000\u0000\u0000-$\u0001\u0000\u0000\u0000-\'\u0001\u0000"+
+		"\u0000\u0000-*\u0001\u0000\u0000\u0000.1\u0001\u0000\u0000\u0000/-\u0001"+
+		"\u0000\u0000\u0000/0\u0001\u0000\u0000\u00000\u0003\u0001\u0000\u0000"+
+		"\u00001/\u0001\u0000\u0000\u000023\u0005\n\u0000\u000038\u0003\u0006\u0003"+
+		"\u000045\u0005\u000b\u0000\u000057\u0003\u0006\u0003\u000064\u0001\u0000"+
+		"\u0000\u00007:\u0001\u0000\u0000\u000086\u0001\u0000\u0000\u000089\u0001"+
+		"\u0000\u0000\u00009;\u0001\u0000\u0000\u0000:8\u0001\u0000\u0000\u0000"+
+		";<\u0005\f\u0000\u0000<=\u0005\r\u0000\u0000=B\u0003\b\u0004\u0000>?\u0005"+
+		"\u000b\u0000\u0000?A\u0003\b\u0004\u0000@>\u0001\u0000\u0000\u0000AD\u0001"+
+		"\u0000\u0000\u0000B@\u0001\u0000\u0000\u0000BC\u0001\u0000\u0000\u0000"+
+		"CE\u0001\u0000\u0000\u0000DB\u0001\u0000\u0000\u0000EF\u0005\u000e\u0000"+
+		"\u0000F\u0005\u0001\u0000\u0000\u0000GJ\u0005\u0015\u0000\u0000HI\u0005"+
+		"\u000f\u0000\u0000IK\u0007\u0000\u0000\u0000JH\u0001\u0000\u0000\u0000"+
+		"JK\u0001\u0000\u0000\u0000K\u0007\u0001\u0000\u0000\u0000LM\u0005\b\u0000"+
+		"\u0000MR\u0003\n\u0005\u0000NO\u0005\u000b\u0000\u0000OQ\u0003\n\u0005"+
+		"\u0000PN\u0001\u0000\u0000\u0000QT\u0001\u0000\u0000\u0000RP\u0001\u0000"+
+		"\u0000\u0000RS\u0001\u0000\u0000\u0000SU\u0001\u0000\u0000\u0000TR\u0001"+
+		"\u0000\u0000\u0000UV\u0005\t\u0000\u0000V\t\u0001\u0000\u0000\u0000WX"+
+		"\u0007\u0001\u0000\u0000X\u000b\u0001\u0000\u0000\u0000\b\u000e\u0019"+
+		"-/8BJR";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

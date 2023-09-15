@@ -17,13 +17,13 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStart(RALIParser.StartContext ctx) { }
+	@Override public void enterStatement(RALIParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStart(RALIParser.StartContext ctx) { }
+	@Override public void exitStatement(RALIParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

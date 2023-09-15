@@ -11,11 +11,11 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link RALIParser#start}.
+	 * Visit a parse tree produced by {@link RALIParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStart(RALIParser.StartContext ctx);
+	T visitStatement(RALIParser.StatementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Intersection}
 	 * labeled alternative in {@link RALIParser#expression}.

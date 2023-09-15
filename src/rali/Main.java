@@ -42,8 +42,11 @@ public class Main {
 			createDatabaseAndLoadData();
 			
 			
-			//execute("ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");
-			execute("ENROLLMENTS JOIN [STUDENT_ID : INTEGER, TEST]{(001,\"foo\", 3), (002, \"bar\")}");
+//			execute("ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");
+//			execute("ENROLLMENTS JOIN [STUDENT_ID : INTEGER, TEST]{(001,\"foo\"), (002, \"bar\")}");
+			execute("[STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
+			execute("FOO = [STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
+			execute("BAR = ENROLLMENTS");
 			
 
 //			Scanner commands = new Scanner(System.in);
@@ -70,7 +73,7 @@ public class Main {
 		RALILexer lexer = new RALILexer(is);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		RALIParser parser = new RALIParser(tokens);
-		ParseTree tree = parser.expression();
+		ParseTree tree = parser.statement();
 		RALIVisitorImp visitor = new RALIVisitorImp(connection);
 		String instruction = visitor.visit(tree);
 		

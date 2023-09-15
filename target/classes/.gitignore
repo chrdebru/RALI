@@ -1,3 +1,6 @@
 /META-INF/
+/RALI.tokens
+/RALILexer.tokens
 /antlr4/
 /rali/
+/test/
