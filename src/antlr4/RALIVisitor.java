@@ -31,6 +31,13 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelation(RALIParser.RelationContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Constant}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstant(RALIParser.ConstantContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Parens}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -72,4 +79,28 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUnion(RALIParser.UnionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#inlinerelation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInlinerelation(RALIParser.InlinerelationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#attribute}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAttribute(RALIParser.AttributeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#tuple}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTuple(RALIParser.TupleContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValue(RALIParser.ValueContext ctx);
 }

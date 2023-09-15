@@ -1,4 +1,4 @@
-Student_ID,Course_ID
+Student_ID : INTEGER,Course_ID : INTEGER
 001,101
 001,103
 002,101

@@ -39,6 +39,13 @@ public class RALIBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements R
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitConstant(RALIParser.ConstantContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitParens(RALIParser.ParensContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -75,4 +82,32 @@ public class RALIBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements R
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitUnion(RALIParser.UnionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInlinerelation(RALIParser.InlinerelationContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitAttribute(RALIParser.AttributeContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitTuple(RALIParser.TupleContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitValue(RALIParser.ValueContext ctx) { return visitChildren(ctx); }
 }

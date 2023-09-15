@@ -1,11 +1,17 @@
 package rali;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,13 +28,22 @@ public class Main {
 
 	private static String CONNECTIONURL = "jdbc:h2:mem:rali";
 	private static Connection connection = null;
+	private static Map<String, String> types = new HashMap<String, String>();
+	
 
 	public static void main(String[] args) {
+
+		types.put("INTEGER", "INTEGER");
+		types.put("DECIMAL", "DOUBLE PRECISION");
+		types.put("STRING", "VARCHAR(255)");
+		types.put("DATE", "DATE");
 
 		try {
 			createDatabaseAndLoadData();
 			
-			execute("ENROLLMENTS DIVIDES DIVTEST");
+			
+			//execute("ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");
+			execute("ENROLLMENTS JOIN [STUDENT_ID : INTEGER, TEST]{(001,\"foo\", 3), (002, \"bar\")}");
 			
 
 //			Scanner commands = new Scanner(System.in);
@@ -63,8 +78,9 @@ public class Main {
 			return;
 		
 		try {
-			//System.err.println(instruction);
+			// System.err.println(instruction);
 			checkConstainsError(instruction);
+			System.out.println(instruction);
 			ResultSet rs = connection.createStatement().executeQuery(instruction);
 			System.out.println(Util.toASCIITable(rs));
 		} catch (JdbcSQLSyntaxErrorException e) {
@@ -82,7 +98,6 @@ public class Main {
 				default:
 					System.out.println("Something went wrong.");
 			}
-			
 		} catch(Exception e) {
 			String msg = e.getMessage();
 			msg = msg.replace("Syntax error in SQL statement \"[*][[ERROR: ", "");
@@ -112,12 +127,41 @@ public class Main {
 				String name = f.getName().toUpperCase().replace(".CSV", "").replaceAll("[^a-zA-Z0-9]", "");
 
 				try {
-					String sql = "CREATE TABLE " + name + " AS SELECT DISTINCT * FROM CSVREAD('" + f.getCanonicalPath()
+					// first get the names and datatypes of tables
+					String[] headers = Files.lines(Paths.get(f.getCanonicalPath()))
+						    .map(s -> s.split(","))
+						    .findFirst()
+						    .get();
+					
+					List<String> attributes = new ArrayList<String>();
+					String[] split;
+					for (String header : headers) {
+						if(header.contains(":")) {
+							split = header.split(":");
+							String attname = split[0].toUpperCase().trim();
+							String atttype = split[1].toUpperCase().trim();
+							if(!types.keySet().contains(atttype)) {
+								System.err.printf("%s is not a valid data type.", atttype);
+								throw new Exception();
+							} else {
+								attributes.add(attname + " " + types.get(atttype));
+							}
+						} else {
+							attributes.add(header.toUpperCase().trim() + " " + types.get("STRING"));
+						}
+					}
+					
+					String sql = "CREATE TABLE " + name + "(" 
+							+ String.join(", ", attributes) + ") AS SELECT DISTINCT * FROM "
+							+ "CSVREAD('" + f.getCanonicalPath()
 							+ "', NULL, NULL);";
+					
 					statement.execute(sql);
+										
 					System.out.printf("Relation %s created.", name);
 					System.out.println();
 				} catch (Exception e) {
+					e.printStackTrace();
 					System.err.printf("Something went wrong reading: %s Skipping file.", f.getName());
 					System.err.println();
 				}

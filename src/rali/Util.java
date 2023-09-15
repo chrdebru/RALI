@@ -28,7 +28,7 @@ public class Util {
 		while(rs.next()) {
 			record = new String[columnCount];
 			for(int i = 0; i < columnCount; i++) {
-				record[i] = rs.getObject(i + 1);
+				record[i] = rs.getObject(i + 1).toString();
 			}
 			records.add(record);
 		}

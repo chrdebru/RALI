@@ -42,6 +42,18 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitRelation(RALIParser.RelationContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Constant}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstant(RALIParser.ConstantContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Constant}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstant(RALIParser.ConstantContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Parens}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -113,4 +125,44 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUnion(RALIParser.UnionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#inlinerelation}.
+	 * @param ctx the parse tree
+	 */
+	void enterInlinerelation(RALIParser.InlinerelationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#inlinerelation}.
+	 * @param ctx the parse tree
+	 */
+	void exitInlinerelation(RALIParser.InlinerelationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#attribute}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttribute(RALIParser.AttributeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#attribute}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttribute(RALIParser.AttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#tuple}.
+	 * @param ctx the parse tree
+	 */
+	void enterTuple(RALIParser.TupleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#tuple}.
+	 * @param ctx the parse tree
+	 */
+	void exitTuple(RALIParser.TupleContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#value}.
+	 * @param ctx the parse tree
+	 */
+	void enterValue(RALIParser.ValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#value}.
+	 * @param ctx the parse tree
+	 */
+	void exitValue(RALIParser.ValueContext ctx);
 }

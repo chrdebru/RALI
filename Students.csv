@@ -1,4 +1,4 @@
-Student_ID,Name,Age,Major
+Student_ID:INTEGER,Name:STRING,Age:INTEGER,Major:STRING
 001,Alice,20,CS
 002,Bob,21,Math
 003,Claire,19,Bio

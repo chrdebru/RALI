@@ -4,25 +4,49 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import antlr4.RALIBaseVisitor;
+import antlr4.RALIParser.AttributeContext;
 import antlr4.RALIParser.CartesianProductContext;
 import antlr4.RALIParser.DifferenceContext;
 import antlr4.RALIParser.DivisionContext;
+import antlr4.RALIParser.InlinerelationContext;
 import antlr4.RALIParser.IntersectionContext;
 import antlr4.RALIParser.NaturalJoinContext;
 import antlr4.RALIParser.ParensContext;
 import antlr4.RALIParser.RelationContext;
+import antlr4.RALIParser.TupleContext;
 import antlr4.RALIParser.UnionContext;
 
 public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	
 	private Connection connection;
 	private static int count = 0;
+	
+	private static List<String> attributes;
+	private static List<String> attributetypes;
+	
+	private static List<List<String>> tuples;
+	private static List<String> tuple;
+	
+	private static Map<String, String> types = new HashMap<String, String>();
+	
+	private static String INTEGER = "INTEGER";
+	private static String DECIMAL = "DECIMAL";
+	private static String STRING = "STRING";
+	private static String DATE = "DATE";
 
 	public RALIVisitorImp(Connection connection) {
 		this.connection = connection;
+		
+		types.put(INTEGER, "INTEGER");
+		types.put(DECIMAL, "DOUBLE PRECISION");
+		types.put(STRING, "VARCHAR(255)");
+		types.put(DATE, "DATE");
 	}
 
 	@Override
@@ -31,38 +55,114 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		return String.format("(SELECT * FROM %s)", relation);
 	}
 	
+	private static String error = null;
+	private static String sql = null;
+	
+	@Override
+	public String visitInlinerelation(InlinerelationContext ctx) {
+		// We need to create a new table in the database
+		// Increment the counter 
+		count++;
+		attributes = new ArrayList<String>();
+		attributetypes = new ArrayList<String>();
+		tuples = new ArrayList<List<String>>();
+		error = null;
+		sql = "";
+		
+		try {
+			super.visitInlinerelation(ctx);
+			
+			String create = "CREATE TABLE TABLE" + count + "(" 
+					+ String.join(", ", attributes) + ");";
+			
+			connection.createStatement().execute(create + sql);
+			
+			if (error == null)
+				return "TABLE" + count;
+			
+			return error;
+		} catch (SQLException e) {
+			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
+		}
+	}
+
+	@Override
+	public String visitAttribute(AttributeContext ctx) {
+		String attname = ctx.label.getText();
+		String atttype = ctx.type != null ? types.get(ctx.type.getText()) : "VARCHAR(255)";
+		attributes.add(attname + " " + atttype);
+		attributetypes.add(atttype);
+		return super.visitAttribute(ctx);
+	}
+
+	@Override
+	public String visitTuple(TupleContext ctx) {
+		tuple = new ArrayList<String>();
+		int size = attributes.size();
+		List<String> values = ctx.values.stream().map(v -> v.getText()).toList();
+		
+		if(ctx.values.size() != size) {
+			error = String.format("[[ERROR: Tuple does not have the correct size of %d: %s.]]", size, values);
+			// We do not have to return, but why bother with the rest?
+			return "";
+		}
+		
+		String insert = "INSERT INTO TABLE" + count + " VALUES (";
+		for(int i = 0; i < size; i++) {
+			if(i != 0) insert += ", ";
+			String type = attributetypes.get(i);
+			if(type.equals(types.get(DATE)))
+				insert += "'" + values.get(i) + "'";
+			else if (type.equals(types.get(STRING)))
+				insert += values.get(i).replace("\"", "'");
+			else
+				insert += values.get(i);
+		}
+		insert += ");";
+		
+		sql += insert;
+		
+		return super.visitTuple(ctx);
+	}
+
+//	@Override
+//	public String visitValue(ValueContext ctx) {
+//		tuple.ctx.getText());
+//		return super.visitValue(ctx);
+//	}
+
 	@Override
 	public String visitUnion(UnionContext ctx) {
-		String left = visit(ctx.expression(0));
-		String right = visit(ctx.expression(1));
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
 		return String.format("(SELECT * FROM %s UNION %s)", left, right);
 	}
 	
 	@Override
 	public String visitIntersection(IntersectionContext ctx) {
-		String left = visit(ctx.expression(0));
-		String right = visit(ctx.expression(1));
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
 		return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
 	}
 	
 	@Override
 	public String visitDifference(DifferenceContext ctx) {
-		String left = visit(ctx.expression(0));
-		String right = visit(ctx.expression(1));
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
 		return String.format("(SELECT * FROM %s MINUS %s)", left, right);
 	}
 	
 	@Override
 	public String visitNaturalJoin(NaturalJoinContext ctx) {
-		String left = visit(ctx.expression(0));
-		String right = visit(ctx.expression(1));
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
 		return String.format("(SELECT DISTINCT * FROM %s NATURAL JOIN %s)", left, right);
 	}
 	
 	@Override
 	public String visitCartesianProduct(CartesianProductContext ctx) {
-		String left = visit(ctx.expression(0));
-		String right = visit(ctx.expression(1));
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);;
 		
 		try {
 			// Get the attributes of the LHS and store them in a list
@@ -97,8 +197,8 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	
 	@Override
 	public String visitDivision(DivisionContext ctx) {
-		String left = visit(ctx.expression(0));
-		String right = visit(ctx.expression(1));
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
 		
 		try {
 			// Get the attributes of the LHS and store them in a list
