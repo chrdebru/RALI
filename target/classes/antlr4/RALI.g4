@@ -13,6 +13,7 @@ expression
 	: LABEL														# Relation 
 	| inlinerelation											# Constant
 	| projection                                                # Pi
+	| selection													# Sigma
 	| left=expression operator='PRODUCT' right=expression		# CartesianProduct
 	| left=expression operator='UNION' right=expression 		# Union
 	| left=expression operator='INTERSECTION' right=expression 	# Intersection
@@ -21,6 +22,31 @@ expression
 	| left=expression operator='DIFFERENCE' right=expression 	# Difference
 	| '(' expression ')'										# Parens
 	;
+
+selection :
+	'SELECT'
+	condition
+	'('
+		expression
+	')'
+;
+
+condition 
+    : atomicformula												# atom
+    | 'NOT' cond=condition										# negation
+    | left=condition op='AND' right=condition 					# and
+    | left=condition op='OR' right=condition 					# or
+	| '(' condition ')'											# cond
+;
+
+
+atomicformula :
+	left=attributeorvalue
+	op=('=' | '<' | '<=' | '>' | '>=' | '<>')
+	right=attributeorvalue
+;
+
+attributeorvalue : (LABEL | value) ;
 
 projection :
 	'PROJECT'

@@ -47,9 +47,12 @@ public class Main {
 //			execute("[STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
 //			execute("FOO = [STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
 //			execute("BAR = ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");
+			//execute("STUDENTS");
+			//execute("PROJECT{AGE,MAJOR}(STUDENTS) PRODUCT PROJECT{NAME}(STUDENTS)");
 			execute("STUDENTS");
-			execute("PROJECT{AGE,AGE,MAJOR}(STUDENTS) PRODUCT PROJECT{NAME}(STUDENTS)");
-			
+			//execute("SELECT STUDENT_ID >= 3 AND 20 < AGE (STUDENTS)");
+			//execute("SELECT NOT (STUDENT_ID >= 3 AND 20 < AGE) (STUDENTS)");
+			execute("SELECT NOT STUDENT_ID >= 3 AND 20 < AGE (STUDENTS)");
 
 //			Scanner commands = new Scanner(System.in);
 //			while (true) {
@@ -99,6 +102,10 @@ public class Main {
 					break;
 				case 42121:
 					System.out.println("Duplicate attribute names (in Cartesian Product)");
+					break;
+				case 42122:
+					String att = e.getOriginalMessage().replace("Column \"", "").replace("\" not found", "");
+					System.out.println("Attribute not found: " + att);
 					break;
 				default:
 					System.out.println("Something went wrong.");

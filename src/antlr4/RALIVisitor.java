@@ -53,6 +53,13 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParens(RALIParser.ParensContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Sigma}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSigma(RALIParser.SigmaContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Pi}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -94,6 +101,59 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUnion(RALIParser.UnionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#selection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelection(RALIParser.SelectionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code negation}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNegation(RALIParser.NegationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code or}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOr(RALIParser.OrContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code and}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAnd(RALIParser.AndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code atom}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtom(RALIParser.AtomContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code cond}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCond(RALIParser.CondContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#atomicformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtomicformula(RALIParser.AtomicformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#attributeorvalue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAttributeorvalue(RALIParser.AttributeorvalueContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RALIParser#projection}.
 	 * @param ctx the parse tree

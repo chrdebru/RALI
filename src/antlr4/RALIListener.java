@@ -80,6 +80,18 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitParens(RALIParser.ParensContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Sigma}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSigma(RALIParser.SigmaContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Sigma}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSigma(RALIParser.SigmaContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Pi}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -151,6 +163,96 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUnion(RALIParser.UnionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#selection}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelection(RALIParser.SelectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#selection}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelection(RALIParser.SelectionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code negation}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterNegation(RALIParser.NegationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code negation}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitNegation(RALIParser.NegationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code or}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterOr(RALIParser.OrContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code or}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitOr(RALIParser.OrContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code and}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterAnd(RALIParser.AndContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code and}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitAnd(RALIParser.AndContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code atom}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtom(RALIParser.AtomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code atom}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtom(RALIParser.AtomContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code cond}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterCond(RALIParser.CondContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cond}
+	 * labeled alternative in {@link RALIParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitCond(RALIParser.CondContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#atomicformula}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtomicformula(RALIParser.AtomicformulaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#atomicformula}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtomicformula(RALIParser.AtomicformulaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#attributeorvalue}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttributeorvalue(RALIParser.AttributeorvalueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#attributeorvalue}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttributeorvalue(RALIParser.AttributeorvalueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RALIParser#projection}.
 	 * @param ctx the parse tree

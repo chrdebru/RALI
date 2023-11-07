@@ -10,17 +10,26 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import antlr4.RALIBaseVisitor;
+import antlr4.RALIParser.AndContext;
 import antlr4.RALIParser.AssignmentContext;
+import antlr4.RALIParser.AtomContext;
+import antlr4.RALIParser.AtomicformulaContext;
 import antlr4.RALIParser.AttributeContext;
+import antlr4.RALIParser.AttributeorvalueContext;
 import antlr4.RALIParser.CartesianProductContext;
+import antlr4.RALIParser.CondContext;
+import antlr4.RALIParser.ConditionContext;
 import antlr4.RALIParser.DifferenceContext;
 import antlr4.RALIParser.DivisionContext;
 import antlr4.RALIParser.InlinerelationContext;
 import antlr4.RALIParser.IntersectionContext;
 import antlr4.RALIParser.NaturalJoinContext;
+import antlr4.RALIParser.NegationContext;
+import antlr4.RALIParser.OrContext;
 import antlr4.RALIParser.ParensContext;
 import antlr4.RALIParser.ProjectionContext;
 import antlr4.RALIParser.RelationContext;
+import antlr4.RALIParser.SelectionContext;
 import antlr4.RALIParser.TupleContext;
 import antlr4.RALIParser.UnionContext;
 
@@ -38,6 +47,9 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	private static String DECIMAL = "DECIMAL";
 	private static String STRING = "STRING";
 	private static String DATE = "DATE";
+	
+	private static String error = null;
+	private static String sql = null;
 
 	public RALIVisitorImp(Connection connection) {
 		this.connection = connection;
@@ -68,9 +80,39 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		return String.format("(SELECT DISTINCT %s FROM %s)", atts, exp);
 	}
 
-	private static String error = null;
-	private static String sql = null;
-	
+	@Override
+	public String visitSelection(SelectionContext ctx) {
+		String cond = visit(ctx.condition());
+		String exp = visit(ctx.expression());
+		
+		return String.format("(SELECT DISTINCT * FROM %s WHERE %s)", exp, cond);
+	}
+
+	@Override
+	public String visitCond(CondContext ctx) {
+		return visit(ctx.condition());
+	}
+
+	@Override
+	public String visitNegation(NegationContext ctx) {
+		return String.format("NOT (%s)", visit(ctx.cond));
+	}
+
+	@Override
+	public String visitOr(OrContext ctx) {
+		return String.format("(%s OR %s)", visit(ctx.left), visit(ctx.right));
+	}
+
+	@Override
+	public String visitAnd(AndContext ctx) {
+		return String.format("(%s AND %s)", visit(ctx.left), visit(ctx.right));
+	}
+
+	@Override
+	public String visitAtomicformula(AtomicformulaContext ctx) {
+		return ctx.getText();
+	}
+
 	@Override
 	public String visitInlinerelation(InlinerelationContext ctx) {
 		// We need to create a new table in the database
