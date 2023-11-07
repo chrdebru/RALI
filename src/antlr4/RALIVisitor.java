@@ -11,11 +11,19 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link RALIParser#statement}.
+	 * Visit a parse tree produced by the {@code Assignment}
+	 * labeled alternative in {@link RALIParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatement(RALIParser.StatementContext ctx);
+	T visitAssignment(RALIParser.AssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Query}
+	 * labeled alternative in {@link RALIParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQuery(RALIParser.QueryContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Intersection}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -44,6 +52,13 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitParens(RALIParser.ParensContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Pi}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPi(RALIParser.PiContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Division}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -79,6 +94,12 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUnion(RALIParser.UnionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RALIParser#projection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProjection(RALIParser.ProjectionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RALIParser#inlinerelation}.
 	 * @param ctx the parse tree

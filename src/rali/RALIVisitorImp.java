@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import antlr4.RALIBaseVisitor;
+import antlr4.RALIParser.AssignmentContext;
 import antlr4.RALIParser.AttributeContext;
 import antlr4.RALIParser.CartesianProductContext;
 import antlr4.RALIParser.DifferenceContext;
@@ -18,8 +19,8 @@ import antlr4.RALIParser.InlinerelationContext;
 import antlr4.RALIParser.IntersectionContext;
 import antlr4.RALIParser.NaturalJoinContext;
 import antlr4.RALIParser.ParensContext;
+import antlr4.RALIParser.ProjectionContext;
 import antlr4.RALIParser.RelationContext;
-import antlr4.RALIParser.StatementContext;
 import antlr4.RALIParser.TupleContext;
 import antlr4.RALIParser.UnionContext;
 
@@ -53,6 +54,20 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		return String.format("(SELECT DISTINCT * FROM %s)", relation);
 	}
 	
+	@Override
+	public String visitProjection(ProjectionContext ctx) {
+		List<String> attlist = ctx.attributes.stream().map(x -> x.getText()).toList();
+		String atts = String.join(", ", attlist);
+		
+		if(attlist.size() != attlist.stream().distinct().toList().size()) {
+			return String.format("[[ERROR: Duplicate attribute names in selection: %s.]]", atts);
+		}
+		
+		String exp = visit(ctx.expression());
+		
+		return String.format("(SELECT DISTINCT %s FROM %s)", atts, exp);
+	}
+
 	private static String error = null;
 	private static String sql = null;
 	
@@ -244,7 +259,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	}
 	
 	@Override
-	public String visitStatement(StatementContext ctx) {
+	public String visitAssignment(AssignmentContext ctx) {
 		String query = visit(ctx.expression());
 
 		if(ctx.label == null)

@@ -5,13 +5,14 @@ grammar RALI;
  */
 
 statement 
-	: label=LABEL '=' expression								# Statement
-	| expression												# Expression		
+	: label=LABEL '=' expression								# Assignment
+	| expression												# Query		
 ;
 
 expression 
 	: LABEL														# Relation 
 	| inlinerelation											# Constant
+	| projection                                                # Pi
 	| left=expression operator='PRODUCT' right=expression		# CartesianProduct
 	| left=expression operator='UNION' right=expression 		# Union
 	| left=expression operator='INTERSECTION' right=expression 	# Intersection
@@ -20,6 +21,16 @@ expression
 	| left=expression operator='DIFFERENCE' right=expression 	# Difference
 	| '(' expression ')'										# Parens
 	;
+
+projection :
+	'PROJECT'
+	'{' 
+		attributes+=LABEL (',' attributes+=LABEL)* 
+	'}'
+	'('
+		expression
+	')'
+;
 	
 inlinerelation :
 	'[' 

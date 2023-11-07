@@ -44,9 +44,11 @@ public class Main {
 			
 //			execute("ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");
 //			execute("ENROLLMENTS JOIN [STUDENT_ID : INTEGER, TEST]{(001,\"foo\"), (002, \"bar\")}");
-			execute("[STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
-			execute("FOO = [STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
-			execute("BAR = ENROLLMENTS");
+//			execute("[STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
+//			execute("FOO = [STUDENT_ID : INTEGER, TEST]{(001,\"foo\")}");
+//			execute("BAR = ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");
+			execute("STUDENTS");
+			execute("PROJECT{AGE,AGE,MAJOR}(STUDENTS) PRODUCT PROJECT{NAME}(STUDENTS)");
 			
 
 //			Scanner commands = new Scanner(System.in);

@@ -8,15 +8,29 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface RALIListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link RALIParser#statement}.
+	 * Enter a parse tree produced by the {@code Assignment}
+	 * labeled alternative in {@link RALIParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement(RALIParser.StatementContext ctx);
+	void enterAssignment(RALIParser.AssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RALIParser#statement}.
+	 * Exit a parse tree produced by the {@code Assignment}
+	 * labeled alternative in {@link RALIParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement(RALIParser.StatementContext ctx);
+	void exitAssignment(RALIParser.AssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Query}
+	 * labeled alternative in {@link RALIParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterQuery(RALIParser.QueryContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Query}
+	 * labeled alternative in {@link RALIParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitQuery(RALIParser.QueryContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Intersection}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -65,6 +79,18 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParens(RALIParser.ParensContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Pi}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPi(RALIParser.PiContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Pi}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPi(RALIParser.PiContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Division}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -125,6 +151,16 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUnion(RALIParser.UnionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#projection}.
+	 * @param ctx the parse tree
+	 */
+	void enterProjection(RALIParser.ProjectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#projection}.
+	 * @param ctx the parse tree
+	 */
+	void exitProjection(RALIParser.ProjectionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RALIParser#inlinerelation}.
 	 * @param ctx the parse tree
