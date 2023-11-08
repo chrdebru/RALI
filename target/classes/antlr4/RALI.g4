@@ -6,7 +6,7 @@ grammar RALI;
 
 statement 
 	: label=LABEL '=' expression								# Assignment
-	| expression												# Query		
+	| expression												# Query
 ;
 
 expression 
