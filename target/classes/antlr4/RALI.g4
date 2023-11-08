@@ -19,7 +19,7 @@ expression
 	| left=expression operator='INTERSECTION' right=expression 	# Intersection
 	| left=expression operator='DIVISION' right=expression		# Division
 	| left=expression operator='JOIN' right=expression 			# NaturalJoin
-	| left=expression operator='DIFFERENCE' right=expression 	# Difference
+	| left=expression operator='MINUS' right=expression 	    # Difference
 	| '(' expression ')'										# Parens
 	;
 
@@ -63,7 +63,7 @@ inlinerelation :
 		attributes+=attribute (',' attributes+=attribute)* 
 	']'
 	'{'
-		tuples+=tuple (',' tuples+=tuple)*
+		(tuples+=tuple (',' tuples+=tuple)*)?
 	'}'
 ;
 

@@ -1,6 +1,0 @@
-Course_ID : INTEGER,Course_Name : STRING,Instructor : STRING
-101,Calculus,Smith
-102,Biology,Johnson
-103,Computer Science,Lee
-104,Microeconomics,Chen
-105,English,Davis

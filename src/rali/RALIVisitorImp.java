@@ -12,13 +12,10 @@ import java.util.stream.Collectors;
 import antlr4.RALIBaseVisitor;
 import antlr4.RALIParser.AndContext;
 import antlr4.RALIParser.AssignmentContext;
-import antlr4.RALIParser.AtomContext;
 import antlr4.RALIParser.AtomicformulaContext;
 import antlr4.RALIParser.AttributeContext;
-import antlr4.RALIParser.AttributeorvalueContext;
 import antlr4.RALIParser.CartesianProductContext;
 import antlr4.RALIParser.CondContext;
-import antlr4.RALIParser.ConditionContext;
 import antlr4.RALIParser.DifferenceContext;
 import antlr4.RALIParser.DivisionContext;
 import antlr4.RALIParser.InlinerelationContext;
@@ -109,8 +106,10 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	}
 
 	@Override
-	public String visitAtomicformula(AtomicformulaContext ctx) {
-		return ctx.getText();
+	public String visitAtomicformula(AtomicformulaContext ctx) {	
+		// We use "" for strings, but SQL requires ''
+		// This is a quick, dirty, but probably good enough hack
+		return ctx.getText().replace("\"", "'");
 	}
 
 	@Override
