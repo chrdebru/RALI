@@ -11,9 +11,6 @@ statement
 
 expression 
 	: LABEL														# Relation 
-	| inlinerelation											# Constant
-	| projection                                                # Pi
-	| selection													# Sigma
 	| left=expression operator='PRODUCT' right=expression		# CartesianProduct
 	| left=expression operator='UNION' right=expression 		# Union
 	| left=expression operator='INTERSECTION' right=expression 	# Intersection
@@ -21,6 +18,9 @@ expression
 	| left=expression operator='JOIN' right=expression 			# NaturalJoin
 	| left=expression operator='MINUS' right=expression 	    # Difference
 	| '(' expression ')'										# Parens
+	| inlinerelation											# Constant
+	| projection                                                # Pi
+	| selection													# Sigma
 	;
 
 selection :

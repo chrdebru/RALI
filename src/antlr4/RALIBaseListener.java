@@ -65,18 +65,6 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConstant(RALIParser.ConstantContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitConstant(RALIParser.ConstantContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterParens(RALIParser.ParensContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -84,6 +72,18 @@ public class RALIBaseListener implements RALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParens(RALIParser.ParensContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConstant(RALIParser.ConstantContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstant(RALIParser.ConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

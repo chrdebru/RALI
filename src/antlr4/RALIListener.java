@@ -56,18 +56,6 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitRelation(RALIParser.RelationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Constant}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterConstant(RALIParser.ConstantContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Constant}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitConstant(RALIParser.ConstantContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code Parens}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -79,6 +67,18 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParens(RALIParser.ParensContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Constant}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstant(RALIParser.ConstantContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Constant}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstant(RALIParser.ConstantContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Sigma}
 	 * labeled alternative in {@link RALIParser#expression}.

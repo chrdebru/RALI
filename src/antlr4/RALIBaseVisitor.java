@@ -46,14 +46,14 @@ public class RALIBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements R
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitConstant(RALIParser.ConstantContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParens(RALIParser.ParensContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParens(RALIParser.ParensContext ctx) { return visitChildren(ctx); }
+	@Override public T visitConstant(RALIParser.ConstantContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
