@@ -53,18 +53,6 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelation(RALIParser.RelationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitRelation(RALIParser.RelationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterParens(RALIParser.ParensContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -96,6 +84,54 @@ public class RALIBaseListener implements RALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSigma(RALIParser.SigmaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDifference(RALIParser.DifferenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDifference(RALIParser.DifferenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUnion(RALIParser.UnionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnion(RALIParser.UnionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRelation(RALIParser.RelationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelation(RALIParser.RelationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRho(RALIParser.RhoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRho(RALIParser.RhoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -137,18 +173,6 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDifference(RALIParser.DifferenceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDifference(RALIParser.DifferenceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNaturalJoin(RALIParser.NaturalJoinContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -173,18 +197,6 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUnion(RALIParser.UnionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUnion(RALIParser.UnionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSelection(RALIParser.SelectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -192,6 +204,30 @@ public class RALIBaseListener implements RALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSelection(RALIParser.SelectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRename(RALIParser.RenameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRename(RALIParser.RenameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAlias(RALIParser.AliasContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAlias(RALIParser.AliasContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

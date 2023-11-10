@@ -30,14 +30,6 @@ public class Main {
 			RALIController rc = RALIController.getInstance();
 			rc.createDatabaseAndLoadData();
 
-			System.out.println(rc.execute("R = [A,B,C]{(\"a\",\"b\",\"c\"),(\"d\",\"a\",\"f\"),(\"c\",\"b\",\"d\")}").get());
-			System.out.println(rc.execute("S = [A,B,C]{(\"b\",\"g\",\"a\"),(\"d\",\"a\",\"f\")}").get());
-			System.out.println(rc.execute("T = [D,E]{(\"a\",\"b\"),(\"c\",\"d\")}").get());
-			System.out.println(rc.execute("U = [B,G:INTEGER]{(\"a\",1),(\"c\",2)}").get());
-			System.out.println(rc.execute("V = [D,E,F:INTEGER]{(\"b\",\"g\",1),(\"d\",\"a\",2)}").get());
-			System.out.println(rc.execute("X = [A,B,C,D]{(\"a\",\"b\",\"c\",\"d\"),(\"a\",\"b\",\"e\",\"f\"),(\"g\",\"h\",\"c\",\"d\"),(\"i\",\"j\",\"k\",\"l\")}").get());
-			System.out.println(rc.execute("Y = [C,D]{(\"c\",\"d\"),(\"e\",\"f\")}").get());
-			
 			Scanner commands = new Scanner(System.in);
 			while (true) {
 				String command = commands.nextLine();

@@ -34,7 +34,7 @@ public class RALIController {
 	
 	private static RALIController instance = null;
 	
-	private static String CONNECTIONURL = "jdbc:h2:mem:rali";
+	private static String CONNECTIONURL = "jdbc:h2:mem:rali;MODE=PostgreSQL";
 	private static Connection connection = null;
 	
 	private static Map<String, String> types = new HashMap<String, String>();
@@ -122,8 +122,8 @@ public class RALIController {
 			return new Right("");
 		
 		try {
-			//System.err.println(instruction);
 			checkConstainsError(instruction);
+			System.out.println(instruction);
 			ResultSet rs = connection.createStatement().executeQuery(instruction);
 			return new Right(toASCIITable(rs));
 		} catch (JdbcSQLSyntaxErrorException e) {

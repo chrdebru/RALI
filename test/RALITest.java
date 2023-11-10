@@ -25,6 +25,14 @@ public class RALITest {
 		rc.execute("COURSES = [COURSE_ID : INTEGER,  COURSE_NAME, INSTRUCTOR]{(101,\"Calculus\",\"Smith\"),(102,\"Biology\",\"Johnson\"),(103,\"Computer Science\",\"Lee\"),(104,\"Microeconomics\",\"Chen\"),(105,\"English\",\"Davis\")}");
 		rc.execute("ENROLLMENTS = [STUDENT_ID : INTEGER, COURSE_ID : INTEGER]{(1,101),(1,103),(2,101),(2,102),(3,102),(4,104),(5,101),(5,103)}");
 		rc.execute("DIVTEST = [COURSE_ID : INTEGER]{(101),(103)}");
+		
+		rc.execute("R = [A,B,C]{(\"a\",\"b\",\"c\"),(\"d\",\"a\",\"f\"),(\"c\",\"b\",\"d\")}");
+		rc.execute("S = [A,B,C]{(\"b\",\"g\",\"a\"),(\"d\",\"a\",\"f\")}");
+		rc.execute("T = [D,E]{(\"a\",\"b\"),(\"c\",\"d\")}");
+		rc.execute("V = [D,E,F:INTEGER]{(\"b\",\"g\",1),(\"d\",\"a\",2)}");
+		rc.execute("U = [B,G:INTEGER]{(\"a\",1),(\"c\",2)}");
+		rc.execute("X = [A,B,C,D]{(\"a\",\"b\",\"c\",\"d\"),(\"a\",\"b\",\"e\",\"f\"),(\"g\",\"h\",\"c\",\"d\"),(\"i\",\"j\",\"k\",\"l\")}");
+		rc.execute("Y = [C,D]{(\"c\",\"d\"),(\"e\",\"f\")}");
 	}
 
 	@Test
@@ -220,7 +228,16 @@ public class RALITest {
 		assertEquals(e.get().toString(), expected);
 		
 		e = rc.execute("STUDENTS DIVISION DIVTEST");
-		assertTrue(e instanceof Left);		
+		assertTrue(e instanceof Left);
+		
+		expected = "+---+---+\r\n"
+				+ "| A | B |\r\n"
+				+ "+---+---+\r\n"
+				+ "| a | b |\r\n"
+				+ "+---+---+";
+		
+		e = rc.execute("X DIVISION Y");		
+		assertEquals(e.get().toString(), expected);
 	}
 	
 	@Test
@@ -397,11 +414,31 @@ public class RALITest {
 				+ "+-------------+-------------+";
 		
 		e = rc.execute("[A : INTEGER]{(1),(5)} JOIN A < B [B : INTEGER]{(3),(4)}");		
-		
 		assertEquals(e.get().toString(), expected);
 		
 		e = rc.execute("STUDENTS JOIN NAME = AGE STUDENTS");
 		assertTrue(e instanceof Left);
 	}
 
+	@Test
+	public void testRename() throws SQLException {
+		String expected = "";
+		Either e = null;
+		
+		expected = "+---+---+---+\r\n"
+				+ "| D | E | C |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| a | b | c |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| c | b | d |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| d | a | f |\r\n"
+				+ "+---+---+---+";
+		
+		e = rc.execute("RENAME A<-D,B<-E(R)");		
+		assertEquals(e.get().toString(), expected);
+				
+		e = rc.execute("RENAME A<-D,X<-E(R)");
+		assertTrue(e instanceof Left);
+	}
 }

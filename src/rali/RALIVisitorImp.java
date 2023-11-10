@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import antlr4.RALIBaseVisitor;
+import antlr4.RALIParser.AliasContext;
 import antlr4.RALIParser.AndContext;
 import antlr4.RALIParser.AssignmentContext;
 import antlr4.RALIParser.AtomicformulaContext;
@@ -26,6 +27,7 @@ import antlr4.RALIParser.OrContext;
 import antlr4.RALIParser.ParensContext;
 import antlr4.RALIParser.ProjectionContext;
 import antlr4.RALIParser.RelationContext;
+import antlr4.RALIParser.RenameContext;
 import antlr4.RALIParser.SelectionContext;
 import antlr4.RALIParser.ThetaJoinContext;
 import antlr4.RALIParser.TupleContext;
@@ -196,7 +198,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	public String visitDifference(DifferenceContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		return String.format("(SELECT * FROM %s MINUS %s)", left, right);
+		return String.format("(SELECT * FROM %s EXCEPT %s)", left, right);
 	}
 	
 	@Override
@@ -347,6 +349,40 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}	
+	}
+
+	@Override
+	public String visitRename(RenameContext ctx) {
+		String exp = visit(ctx.expression());
+		List<String> aliases = ctx.aliases.stream().map(x -> visitAlias(x)).toList();
+		
+		// LHS of each alias
+		List<String> LHS = aliases.stream().map(x -> x.substring(0, x.indexOf(" "))).toList();
+		
+		try {
+			// Get the attributes of the query and store them in a list
+			ResultSet rs = connection.createStatement().executeQuery(exp);
+			ArrayList<String> att = new ArrayList<String>();
+			for(int a = 1; a <= rs.getMetaData().getColumnCount(); a++)
+				att.add(rs.getMetaData().getColumnLabel(a));
+			
+			ArrayList<String> finallist = new ArrayList<String>(aliases);
+			for(String a : att) {
+				if(!LHS.contains(a))
+					finallist.add(a);
+			}
+						
+			String attributes = finallist.stream().collect(Collectors.joining(", "));
+			return String.format("(SELECT DISTINCT %s FROM %s)", attributes, exp);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}	
+	}
+	
+	@Override
+	public String visitAlias(AliasContext ctx) {
+		return ctx.getText().replace("<-", " AS ");
 	}
 
 }

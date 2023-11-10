@@ -23,6 +23,7 @@ expression
 	| inlinerelation											# Constant
 	| projection                                                # Pi
 	| selection													# Sigma
+	| rename													# Rho
 	;
 
 selection :
@@ -31,6 +32,18 @@ selection :
 	'('
 		expression
 	')'
+;
+
+rename :
+	'RENAME'
+	aliases+=alias (',' aliases+=alias)* 
+	'('
+		expression
+	')'
+;
+
+alias :
+	LABEL '<-' LABEL
 ;
 
 condition 
