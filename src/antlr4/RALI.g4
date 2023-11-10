@@ -15,6 +15,8 @@ expression
 	| left=expression operator='UNION' right=expression 		# Union
 	| left=expression operator='INTERSECTION' right=expression 	# Intersection
 	| left=expression operator='DIVISION' right=expression		# Division
+	| left=expression operator='JOIN' cond=condition 
+	  right=expression										    # ThetaJoin
 	| left=expression operator='JOIN' right=expression 			# NaturalJoin
 	| left=expression operator='MINUS' right=expression 	    # Difference
 	| '(' expression ')'										# Parens

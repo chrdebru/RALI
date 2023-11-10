@@ -27,6 +27,7 @@ import antlr4.RALIParser.ParensContext;
 import antlr4.RALIParser.ProjectionContext;
 import antlr4.RALIParser.RelationContext;
 import antlr4.RALIParser.SelectionContext;
+import antlr4.RALIParser.ThetaJoinContext;
 import antlr4.RALIParser.TupleContext;
 import antlr4.RALIParser.UnionContext;
 
@@ -315,6 +316,37 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		} catch (SQLException e) {
 			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
 		}
+	}
+
+	@Override
+	public String visitThetaJoin(ThetaJoinContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		String cond = visit(ctx.cond);
+		
+		try {
+			// Get the attributes of the LHS and store them in a list
+			ResultSet rsleft = connection.createStatement().executeQuery(left);
+			ArrayList<String> attleft = new ArrayList<String>();
+			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
+				attleft.add(rsleft.getMetaData().getColumnLabel(a));
+						
+			// Get the attributes of the RHS and store them in a list
+			ResultSet rsright = connection.createStatement().executeQuery(right);
+			ArrayList<String> attright = new ArrayList<String>();
+			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
+				attright.add(rsright.getMetaData().getColumnLabel(a));
+			
+			attleft.retainAll(attright);
+			
+			if(attleft.size() > 0)
+				return String.format("[[ERROR: LHS and RHS of the Theta Join share attributes: %s.]]", attleft);
+			
+			return String.format("(SELECT DISTINCT * FROM %s JOIN %s ON %s)", left, right, cond);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}	
 	}
 
 }

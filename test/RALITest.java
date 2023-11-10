@@ -382,5 +382,26 @@ public class RALITest {
 		e = rc.execute("PROJECT {STUDENT_ID, NAME, AGE} (SELECT NOT (AGE < 20 OR MAJOR = \"CS\") (STUDENTS))");		
 		assertEquals(e.get().toString(), expected);
 	}
+	
+	@Test
+	public void testThetaJoin() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           4 |\r\n"
+				+ "+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER]{(1),(5)} JOIN A < B [B : INTEGER]{(3),(4)}");		
+		
+		assertEquals(e.get().toString(), expected);
+		
+		e = rc.execute("STUDENTS JOIN NAME = AGE STUDENTS");
+		assertTrue(e instanceof Left);
+	}
 
 }

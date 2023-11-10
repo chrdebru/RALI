@@ -92,6 +92,18 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitSigma(RALIParser.SigmaContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code ThetaJoin}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterThetaJoin(RALIParser.ThetaJoinContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ThetaJoin}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitThetaJoin(RALIParser.ThetaJoinContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Pi}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree

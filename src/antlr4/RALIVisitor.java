@@ -60,6 +60,13 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSigma(RALIParser.SigmaContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ThetaJoin}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThetaJoin(RALIParser.ThetaJoinContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Pi}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
