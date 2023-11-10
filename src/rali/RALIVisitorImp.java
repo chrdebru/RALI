@@ -290,7 +290,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 					attright.stream().collect(Collectors.joining(", ")),
 					left,
 					v3,
-					attleft.stream().map(x -> String.format("R%d.%s = R%d.%s", v3, x, v1, x)).collect(Collectors.joining(", "))
+					attleft.stream().map(x -> String.format("R%d.%s = R%d.%s", v3, x, v1, x)).collect(Collectors.joining(" AND "))
 					);
 			
 			return filled;
