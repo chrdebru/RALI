@@ -144,16 +144,22 @@ public class RALIController {
 					msg = "Attribute not found: " + att;
 					break;
 				default:
+					e.printStackTrace();
 					msg = "Something went wrong.";
 			}
-			
 			return new Left(msg);
 		} catch(Exception e) {
 			String msg = e.getMessage();
 			msg = msg.replace("Syntax error in SQL statement \"[*][[ERROR: ", "");
+			
+			if(msg.contains("already exists")) {
+				msg = msg.replace("Problem creating constant relation: View \"", "");
+				int i = msg.indexOf("\"");
+				msg = "Relation already exists: " + msg.substring(0, i);
+			}
+			
 			return new Left(msg);
 		}
-		
 	}
 
 	private void checkConstainsError(String instruction) throws Exception {
