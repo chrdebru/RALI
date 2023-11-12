@@ -109,7 +109,7 @@ public class RALIController {
 		statement.close();
 	}
 	
-	public Either execute(String command) throws SQLException {
+	public Either execute(String command) throws SQLException {		
 		CharStream is = CharStreams.fromString(command);
 		RALILexer lexer = new RALILexer(is);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -123,7 +123,6 @@ public class RALIController {
 		
 		try {
 			checkConstainsError(instruction);
-			System.out.println(instruction);
 			ResultSet rs = connection.createStatement().executeQuery(instruction);
 			return new Right(toASCIITable(rs));
 		} catch (JdbcSQLSyntaxErrorException e) {
