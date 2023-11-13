@@ -11,20 +11,32 @@ statement
 
 expression 
 	: LABEL														# Relation 
-	| left=expression operator='PRODUCT' right=expression		# CartesianProduct
-	| left=expression operator='UNION' right=expression 		# Union
-	| left=expression operator='INTERSECTION' right=expression 	# Intersection
-	| left=expression operator='DIVISION' right=expression		# Division
-	| left=expression operator='JOIN' cond=condition 
-	  right=expression										    # ThetaJoin
-	| left=expression operator='JOIN' right=expression 			# NaturalJoin
-	| left=expression operator='MINUS' right=expression 	    # Difference
-	| '(' expression ')'										# Parens
 	| inlinerelation											# Constant
+	
+	// Unary operators first
 	| projection                                                # Pi
 	| selection													# Sigma
 	| rename													# Rho
+
+	// Then cartesian products and joins
+	| left=expression 
+	  operator=joinsOperator 
+	  (cond=condition)? 
+	  right=expression											# Joins
+
+	// Then intersection
+	| left=expression operator='INTERSECTION' right=expression 	# Intersection
+
+	// Then difference and union
+	| left=expression operator='MINUS' right=expression 	    # Difference
+	| left=expression operator='UNION' right=expression 		# Union
+	
+	| '(' expression ')'										# Parens
 	;
+
+joinsOperator:
+	'PRODUCT'| 'JOIN'| 'DIVISION'
+;
 
 selection :
 	'SELECT'

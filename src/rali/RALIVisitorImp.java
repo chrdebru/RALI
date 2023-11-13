@@ -15,13 +15,12 @@ import antlr4.RALIParser.AndContext;
 import antlr4.RALIParser.AssignmentContext;
 import antlr4.RALIParser.AtomicformulaContext;
 import antlr4.RALIParser.AttributeContext;
-import antlr4.RALIParser.CartesianProductContext;
 import antlr4.RALIParser.CondContext;
+import antlr4.RALIParser.ConditionContext;
 import antlr4.RALIParser.DifferenceContext;
-import antlr4.RALIParser.DivisionContext;
 import antlr4.RALIParser.InlinerelationContext;
 import antlr4.RALIParser.IntersectionContext;
-import antlr4.RALIParser.NaturalJoinContext;
+import antlr4.RALIParser.JoinsContext;
 import antlr4.RALIParser.NegationContext;
 import antlr4.RALIParser.OrContext;
 import antlr4.RALIParser.ParensContext;
@@ -29,7 +28,6 @@ import antlr4.RALIParser.ProjectionContext;
 import antlr4.RALIParser.RelationContext;
 import antlr4.RALIParser.RenameContext;
 import antlr4.RALIParser.SelectionContext;
-import antlr4.RALIParser.ThetaJoinContext;
 import antlr4.RALIParser.TupleContext;
 import antlr4.RALIParser.UnionContext;
 
@@ -202,14 +200,88 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	}
 	
 	@Override
-	public String visitNaturalJoin(NaturalJoinContext ctx) {
-		String left = visit(ctx.left);
-		String right = visit(ctx.right);
-		return String.format("(SELECT DISTINCT * FROM %s NATURAL JOIN %s)", left, right);
+	public String visitParens(ParensContext ctx) {
+		String e = visit(ctx.expression());
+		return String.format("(%s)", e);
+	}
+	
+
+	
+	@Override
+	public String visitAssignment(AssignmentContext ctx) {
+		String query = visit(ctx.expression());
+
+		if(ctx.label == null)
+			return query;
+		
+		try {
+			String viewname = ctx.label.getText();
+			String sql = String.format("CREATE VIEW %s AS %s", viewname, query);
+			connection.createStatement().execute(sql);
+			return String.format("(SELECT DISTINCT * FROM %s)", viewname);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
+		}
+	}
+
+	@Override
+	public String visitRename(RenameContext ctx) {
+		String exp = visit(ctx.expression());
+		List<String> aliases = ctx.aliases.stream().map(x -> visitAlias(x)).toList();
+		
+		// LHS of each alias
+		List<String> LHS = aliases.stream().map(x -> x.substring(0, x.indexOf(" "))).toList();
+		
+		try {
+			// Get the attributes of the query and store them in a list
+			ResultSet rs = connection.createStatement().executeQuery(exp);
+			ArrayList<String> att = new ArrayList<String>();
+			for(int a = 1; a <= rs.getMetaData().getColumnCount(); a++)
+				att.add(rs.getMetaData().getColumnLabel(a));
+			
+			ArrayList<String> finallist = new ArrayList<String>(aliases);
+			for(String a : att) {
+				if(!LHS.contains(a))
+					finallist.add(a);
+			}
+						
+			String attributes = finallist.stream().collect(Collectors.joining(", "));
+			return String.format("(SELECT DISTINCT %s FROM %s)", attributes, exp);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}	
 	}
 	
 	@Override
-	public String visitCartesianProduct(CartesianProductContext ctx) {
+	public String visitAlias(AliasContext ctx) {
+		return ctx.getText().replace("<-", " AS ");
+	}
+
+	//*************************************************************************
+	// Cartesian Product and JOINS
+	//*************************************************************************
+	
+	@Override
+	public String visitJoins(JoinsContext ctx) {
+		String op = ctx.operator.getText();
+		ConditionContext cond = ctx.condition();
+		
+		if(cond != null && !"JOIN".equals(op))
+			return String.format("[[ERROR: op %s cannot have a condition.]]", cond);
+		
+		if("PRODUCT".equals(op))
+			return visitCartesianProduct(ctx);
+		else if("DIVISION".equals(op))
+			return visitDivision(ctx);
+		else if(cond != null)
+			return visitThetaJoin(ctx);
+		else
+			return visitNaturalJoin(ctx);
+	}	
+	
+	public String visitCartesianProduct(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);;
 		
@@ -238,14 +310,43 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		}
 	}
 	
-	@Override
-	public String visitParens(ParensContext ctx) {
-		String e = visit(ctx.expression());
-		return String.format("(%s)", e);
+	public String visitNaturalJoin(JoinsContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT DISTINCT * FROM %s NATURAL JOIN %s)", left, right);
 	}
 	
-	@Override
-	public String visitDivision(DivisionContext ctx) {
+	public String visitThetaJoin(JoinsContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		String cond = visit(ctx.cond);
+		
+		try {
+			// Get the attributes of the LHS and store them in a list
+			ResultSet rsleft = connection.createStatement().executeQuery(left);
+			ArrayList<String> attleft = new ArrayList<String>();
+			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
+				attleft.add(rsleft.getMetaData().getColumnLabel(a));
+						
+			// Get the attributes of the RHS and store them in a list
+			ResultSet rsright = connection.createStatement().executeQuery(right);
+			ArrayList<String> attright = new ArrayList<String>();
+			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
+				attright.add(rsright.getMetaData().getColumnLabel(a));
+			
+			attleft.retainAll(attright);
+			
+			if(attleft.size() > 0)
+				return String.format("[[ERROR: LHS and RHS of the Theta Join share attributes: %s.]]", attleft);
+			
+			return String.format("(SELECT DISTINCT * FROM %s JOIN %s ON %s)", left, right, cond);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}	
+	}
+	
+	public String visitDivision(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
 		
@@ -301,88 +402,4 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
 	}
-	
-	@Override
-	public String visitAssignment(AssignmentContext ctx) {
-		String query = visit(ctx.expression());
-
-		if(ctx.label == null)
-			return query;
-		
-		try {
-			String viewname = ctx.label.getText();
-			String sql = String.format("CREATE VIEW %s AS %s", viewname, query);
-			connection.createStatement().execute(sql);
-			return String.format("(SELECT DISTINCT * FROM %s)", viewname);
-			
-		} catch (SQLException e) {
-			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
-		}
-	}
-
-	@Override
-	public String visitThetaJoin(ThetaJoinContext ctx) {
-		String left = visit(ctx.left);
-		String right = visit(ctx.right);
-		String cond = visit(ctx.cond);
-		
-		try {
-			// Get the attributes of the LHS and store them in a list
-			ResultSet rsleft = connection.createStatement().executeQuery(left);
-			ArrayList<String> attleft = new ArrayList<String>();
-			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
-				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
-			// Get the attributes of the RHS and store them in a list
-			ResultSet rsright = connection.createStatement().executeQuery(right);
-			ArrayList<String> attright = new ArrayList<String>();
-			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
-				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
-			attleft.retainAll(attright);
-			
-			if(attleft.size() > 0)
-				return String.format("[[ERROR: LHS and RHS of the Theta Join share attributes: %s.]]", attleft);
-			
-			return String.format("(SELECT DISTINCT * FROM %s JOIN %s ON %s)", left, right, cond);
-			
-		} catch (SQLException e) {
-			return String.format("[[ERROR: %s.]]", e.getMessage());
-		}	
-	}
-
-	@Override
-	public String visitRename(RenameContext ctx) {
-		String exp = visit(ctx.expression());
-		List<String> aliases = ctx.aliases.stream().map(x -> visitAlias(x)).toList();
-		
-		// LHS of each alias
-		List<String> LHS = aliases.stream().map(x -> x.substring(0, x.indexOf(" "))).toList();
-		
-		try {
-			// Get the attributes of the query and store them in a list
-			ResultSet rs = connection.createStatement().executeQuery(exp);
-			ArrayList<String> att = new ArrayList<String>();
-			for(int a = 1; a <= rs.getMetaData().getColumnCount(); a++)
-				att.add(rs.getMetaData().getColumnLabel(a));
-			
-			ArrayList<String> finallist = new ArrayList<String>(aliases);
-			for(String a : att) {
-				if(!LHS.contains(a))
-					finallist.add(a);
-			}
-						
-			String attributes = finallist.stream().collect(Collectors.joining(", "));
-			return String.format("(SELECT DISTINCT %s FROM %s)", attributes, exp);
-			
-		} catch (SQLException e) {
-			return String.format("[[ERROR: %s.]]", e.getMessage());
-		}	
-	}
-	
-	@Override
-	public String visitAlias(AliasContext ctx) {
-		return ctx.getText().replace("<-", " AS ");
-	}
-
 }

@@ -44,17 +44,17 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitIntersection(RALIParser.IntersectionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Parens}
+	 * Enter a parse tree produced by the {@code Relation}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterParens(RALIParser.ParensContext ctx);
+	void enterRelation(RALIParser.RelationContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Parens}
+	 * Exit a parse tree produced by the {@code Relation}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitParens(RALIParser.ParensContext ctx);
+	void exitRelation(RALIParser.RelationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Constant}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -68,6 +68,18 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitConstant(RALIParser.ConstantContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Parens}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterParens(RALIParser.ParensContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Parens}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitParens(RALIParser.ParensContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Sigma}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -79,6 +91,30 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSigma(RALIParser.SigmaContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Rho}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterRho(RALIParser.RhoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Rho}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitRho(RALIParser.RhoContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Pi}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPi(RALIParser.PiContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Pi}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPi(RALIParser.PiContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Difference}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -104,89 +140,27 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitUnion(RALIParser.UnionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Relation}
+	 * Enter a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterRelation(RALIParser.RelationContext ctx);
+	void enterJoins(RALIParser.JoinsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Relation}
+	 * Exit a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitRelation(RALIParser.RelationContext ctx);
+	void exitJoins(RALIParser.JoinsContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Rho}
-	 * labeled alternative in {@link RALIParser#expression}.
+	 * Enter a parse tree produced by {@link RALIParser#joinsOperator}.
 	 * @param ctx the parse tree
 	 */
-	void enterRho(RALIParser.RhoContext ctx);
+	void enterJoinsOperator(RALIParser.JoinsOperatorContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Rho}
-	 * labeled alternative in {@link RALIParser#expression}.
+	 * Exit a parse tree produced by {@link RALIParser#joinsOperator}.
 	 * @param ctx the parse tree
 	 */
-	void exitRho(RALIParser.RhoContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ThetaJoin}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterThetaJoin(RALIParser.ThetaJoinContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ThetaJoin}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitThetaJoin(RALIParser.ThetaJoinContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Pi}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterPi(RALIParser.PiContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Pi}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitPi(RALIParser.PiContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Division}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDivision(RALIParser.DivisionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Division}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDivision(RALIParser.DivisionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code NaturalJoin}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterNaturalJoin(RALIParser.NaturalJoinContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code NaturalJoin}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitNaturalJoin(RALIParser.NaturalJoinContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code CartesianProduct}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterCartesianProduct(RALIParser.CartesianProductContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code CartesianProduct}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitCartesianProduct(RALIParser.CartesianProductContext ctx);
+	void exitJoinsOperator(RALIParser.JoinsOperatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RALIParser#selection}.
 	 * @param ctx the parse tree
