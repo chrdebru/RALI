@@ -28,14 +28,19 @@ expression
 	| left=expression operator='INTERSECTION' right=expression 	# Intersection
 
 	// Then difference and union
-	| left=expression operator='MINUS' right=expression 	    # Difference
-	| left=expression operator='UNION' right=expression 		# Union
+	| left=expression 
+	  operator=diffUnionOperator 
+	  right=expression 	    									# DifferenceOrUnion
 	
 	| '(' expression ')'										# Parens
 	;
 
 joinsOperator:
 	'PRODUCT'| 'JOIN'| 'DIVISION'
+;
+
+diffUnionOperator:
+	'MINUS'| 'UNION'
 ;
 
 selection :

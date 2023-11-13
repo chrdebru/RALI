@@ -104,6 +104,18 @@ public interface RALIListener extends ParseTreeListener {
 	 */
 	void exitRho(RALIParser.RhoContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code DifferenceOrUnion}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterDifferenceOrUnion(RALIParser.DifferenceOrUnionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DifferenceOrUnion}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitDifferenceOrUnion(RALIParser.DifferenceOrUnionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Pi}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
@@ -115,30 +127,6 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPi(RALIParser.PiContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Difference}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDifference(RALIParser.DifferenceContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Difference}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDifference(RALIParser.DifferenceContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Union}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterUnion(RALIParser.UnionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Union}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitUnion(RALIParser.UnionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -161,6 +149,16 @@ public interface RALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitJoinsOperator(RALIParser.JoinsOperatorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RALIParser#diffUnionOperator}.
+	 * @param ctx the parse tree
+	 */
+	void enterDiffUnionOperator(RALIParser.DiffUnionOperatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RALIParser#diffUnionOperator}.
+	 * @param ctx the parse tree
+	 */
+	void exitDiffUnionOperator(RALIParser.DiffUnionOperatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RALIParser#selection}.
 	 * @param ctx the parse tree

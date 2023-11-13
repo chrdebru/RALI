@@ -17,7 +17,7 @@ import antlr4.RALIParser.AtomicformulaContext;
 import antlr4.RALIParser.AttributeContext;
 import antlr4.RALIParser.CondContext;
 import antlr4.RALIParser.ConditionContext;
-import antlr4.RALIParser.DifferenceContext;
+import antlr4.RALIParser.DifferenceOrUnionContext;
 import antlr4.RALIParser.InlinerelationContext;
 import antlr4.RALIParser.IntersectionContext;
 import antlr4.RALIParser.JoinsContext;
@@ -29,7 +29,6 @@ import antlr4.RALIParser.RelationContext;
 import antlr4.RALIParser.RenameContext;
 import antlr4.RALIParser.SelectionContext;
 import antlr4.RALIParser.TupleContext;
-import antlr4.RALIParser.UnionContext;
 
 public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	
@@ -179,33 +178,10 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 	}
 
 	@Override
-	public String visitUnion(UnionContext ctx) {
-		String left = visit(ctx.left);
-		String right = visit(ctx.right);
-		return String.format("(SELECT * FROM %s UNION %s)", left, right);
-	}
-	
-	@Override
-	public String visitIntersection(IntersectionContext ctx) {
-		String left = visit(ctx.left);
-		String right = visit(ctx.right);
-		return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
-	}
-	
-	@Override
-	public String visitDifference(DifferenceContext ctx) {
-		String left = visit(ctx.left);
-		String right = visit(ctx.right);
-		return String.format("(SELECT * FROM %s EXCEPT %s)", left, right);
-	}
-	
-	@Override
 	public String visitParens(ParensContext ctx) {
 		String e = visit(ctx.expression());
 		return String.format("(%s)", e);
 	}
-	
-
 	
 	@Override
 	public String visitAssignment(AssignmentContext ctx) {
@@ -401,5 +377,41 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
+	}
+	
+	//*************************************************************************
+	// INTERSECTION
+	//*************************************************************************
+	
+	@Override
+	public String visitIntersection(IntersectionContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
+	}
+	
+	//*************************************************************************
+	// Difference and Union
+	//*************************************************************************
+	@Override
+	public String visitDifferenceOrUnion(DifferenceOrUnionContext ctx) {
+		String op = ctx.operator.getText();
+		
+		if("MINUS".equals(op))
+			return visitDifference(ctx);
+		else
+			return visitUnion(ctx);
+	}	
+	
+	public String visitUnion(DifferenceOrUnionContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT * FROM %s UNION %s)", left, right);
+	}
+
+	public String visitDifference(DifferenceOrUnionContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT * FROM %s EXCEPT %s)", left, right);
 	}
 }
