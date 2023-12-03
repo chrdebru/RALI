@@ -32,12 +32,12 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntersection(RALIParser.IntersectionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Parens}
+	 * Visit a parse tree produced by the {@code Relation}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParens(RALIParser.ParensContext ctx);
+	T visitRelation(RALIParser.RelationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Constant}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -46,33 +46,19 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstant(RALIParser.ConstantContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Parens}
+	 * labeled alternative in {@link RALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParens(RALIParser.ParensContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Sigma}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitSigma(RALIParser.SigmaContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Difference}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDifference(RALIParser.DifferenceContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Union}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUnion(RALIParser.UnionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link RALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelation(RALIParser.RelationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Rho}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -81,12 +67,12 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRho(RALIParser.RhoContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ThetaJoin}
+	 * Visit a parse tree produced by the {@code DifferenceOrUnion}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitThetaJoin(RALIParser.ThetaJoinContext ctx);
+	T visitDifferenceOrUnion(RALIParser.DifferenceOrUnionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Pi}
 	 * labeled alternative in {@link RALIParser#expression}.
@@ -95,26 +81,24 @@ public interface RALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPi(RALIParser.PiContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Division}
+	 * Visit a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link RALIParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDivision(RALIParser.DivisionContext ctx);
+	T visitJoins(RALIParser.JoinsContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code NaturalJoin}
-	 * labeled alternative in {@link RALIParser#expression}.
+	 * Visit a parse tree produced by {@link RALIParser#joinsOperator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNaturalJoin(RALIParser.NaturalJoinContext ctx);
+	T visitJoinsOperator(RALIParser.JoinsOperatorContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code CartesianProduct}
-	 * labeled alternative in {@link RALIParser#expression}.
+	 * Visit a parse tree produced by {@link RALIParser#diffUnionOperator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCartesianProduct(RALIParser.CartesianProductContext ctx);
+	T visitDiffUnionOperator(RALIParser.DiffUnionOperatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RALIParser#selection}.
 	 * @param ctx the parse tree

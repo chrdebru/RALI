@@ -53,13 +53,13 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParens(RALIParser.ParensContext ctx) { }
+	@Override public void enterRelation(RALIParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParens(RALIParser.ParensContext ctx) { }
+	@Override public void exitRelation(RALIParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -77,6 +77,18 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParens(RALIParser.ParensContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParens(RALIParser.ParensContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSigma(RALIParser.SigmaContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -84,42 +96,6 @@ public class RALIBaseListener implements RALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSigma(RALIParser.SigmaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDifference(RALIParser.DifferenceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDifference(RALIParser.DifferenceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterUnion(RALIParser.UnionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUnion(RALIParser.UnionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterRelation(RALIParser.RelationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitRelation(RALIParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -137,13 +113,13 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterThetaJoin(RALIParser.ThetaJoinContext ctx) { }
+	@Override public void enterDifferenceOrUnion(RALIParser.DifferenceOrUnionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitThetaJoin(RALIParser.ThetaJoinContext ctx) { }
+	@Override public void exitDifferenceOrUnion(RALIParser.DifferenceOrUnionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -161,37 +137,37 @@ public class RALIBaseListener implements RALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDivision(RALIParser.DivisionContext ctx) { }
+	@Override public void enterJoins(RALIParser.JoinsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDivision(RALIParser.DivisionContext ctx) { }
+	@Override public void exitJoins(RALIParser.JoinsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNaturalJoin(RALIParser.NaturalJoinContext ctx) { }
+	@Override public void enterJoinsOperator(RALIParser.JoinsOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNaturalJoin(RALIParser.NaturalJoinContext ctx) { }
+	@Override public void exitJoinsOperator(RALIParser.JoinsOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCartesianProduct(RALIParser.CartesianProductContext ctx) { }
+	@Override public void enterDiffUnionOperator(RALIParser.DiffUnionOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCartesianProduct(RALIParser.CartesianProductContext ctx) { }
+	@Override public void exitDiffUnionOperator(RALIParser.DiffUnionOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
