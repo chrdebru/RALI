@@ -1,0 +1,16 @@
+NO_PART : INTEGER,NOM_PART,PRENOM_PART,ADRESSE_PART
+1,Base,Dieudonné,AdresseA
+2,NomB,PrenomB,AdresseB
+3,NomC,PrenomC,AdresseC
+4,NomD,PrenomD,AdresseD
+5,NomE,PrenomE,AdresseE
+6,NomF,PrenomF,AdresseF
+7,NomG,PrenomG,AdresseG
+8,NomH,PrenomH,AdresseH
+9,NomI,PrenomI,AdresseI
+11,NomK,PrenomK,AdresseK
+10,NomJ,PrenomJ,AdresseJ
+12,NomL,PrenomL,AdresseL
+13,NomM,PrenomM,AdresseM
+14,NomN,PrenomN,AdresseN
+15,El Reso,Maude,AdresseO
