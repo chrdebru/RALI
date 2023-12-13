@@ -1,4 +1,4 @@
-package rali;
+package erali;
 
 import java.util.Scanner;
 
@@ -9,15 +9,15 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		System.out.println(".-------.       ____      .---.    .-./`)  \r\n"
-				+ "|  _ _   \\    .'  __ `.   | ,_|    \\ .-.') \r\n"
-				+ "| ( ' )  |   /   '  \\  \\,-./  )    / `-' \\ \r\n"
-				+ "|(_ o _) /   |___|  /  |\\  '_ '`)   `-'`\"` \r\n"
-				+ "| (_,_).' __    _.-`   | > (_)  )   .---.  \r\n"
-				+ "|  |\\ \\  |  |.'   _    |(  .  .-'   |   |  \r\n"
-				+ "|  | \\ `'   /|  _( )_  | `-'`-'|___ |   |  \r\n"
-				+ "|  |  \\    / \\ (_ o _) /  |        \\|   |  \r\n"
-				+ "''-'   `'-'   '.(_,_).'   `--------`'---'");
+		System.out.println("    .-''-.  .-------.       ____      .---.    .-./`)  \r\n"
+				+ "  .'_ _   \\ |  _ _   \\    .'  __ `.   | ,_|    \\ .-.') \r\n"
+				+ " / ( ` )   '| ( ' )  |   /   '  \\  \\,-./  )    / `-' \\ \r\n"
+				+ ". (_ o _)  ||(_ o _) /   |___|  /  |\\  '_ '`)   `-'`\"` \r\n"
+				+ "|  (_,_)___|| (_,_).' __    _.-`   | > (_)  )   .---.  \r\n"
+				+ "'  \\   .---.|  |\\ \\  |  |.'   _    |(  .  .-'   |   |  \r\n"
+				+ " \\  `-'    /|  | \\ `'   /|  _( )_  | `-'`-'|___ |   |  \r\n"
+				+ "  \\       / |  |  \\    / \\ (_ o _) /  |        \\|   |  \r\n"
+				+ "   `'-..-'  ''-'   `'-'   '.(_,_).'   `--------`'---'  ");
 
 		System.out.println("Welcome to RALI, the Relational Algebra Learning Instrument!");
 		System.out.println();
@@ -27,7 +27,7 @@ public class Main {
 		System.out.println();
 		
 		try {
-			RALIController rc = RALIController.getInstance();
+			ERALIController rc = ERALIController.getInstance();
 			rc.createDatabaseAndLoadData();
 
 			Scanner commands = new Scanner(System.in);
