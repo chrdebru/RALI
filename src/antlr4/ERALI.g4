@@ -17,6 +17,7 @@ expression
 	| projection                                                # Pi
 	| selection													# Sigma
 	| rename													# Rho
+	| distinct													# Delta
 
 	// Then cartesian products and joins
 	| left=expression 
@@ -34,6 +35,10 @@ expression
 	
 	| '(' expression ')'										# Parens
 	;
+	
+distinct :
+	'DISTINCT' '(' expression ')'
+;
 
 joinsOperator:
 	'PRODUCT'| 'JOIN'| 'DIVISION'
@@ -117,7 +122,7 @@ value:
  */
  
 RESERVED 	: 'TIMES' | 'DIVISION' | 'INTERSECTION' | 'UNION' | 'PRODUCT' | 'DIFFERENCE' 
-			  'STRING' | 'INTEGER' | 'DECIMAL' | 'DATE' ;
+			  'STRING' | 'INTEGER' | 'DECIMAL' | 'DATE'  | 'DISTINCT' ;
 
 LABEL : [A-Z] ([A-Z] | [0-9] | '_')*;
 INTEGER : '-'? [0-9]+;

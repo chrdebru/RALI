@@ -131,7 +131,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 			connection.createStatement().execute(create + sql);
 			
 			if (error == null)
-				return String.format("(SELECT DISTINCT * FROM TABLE %s)", count);
+				return String.format("(SELECT DISTINCT * FROM TABLE%s)", count);
 			
 			return error;
 		} catch (SQLException e) {

@@ -24,8 +24,8 @@ import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 
 import com.github.freva.asciitable.AsciiTable;
 
-import antlr4.RALILexer;
-import antlr4.RALIParser;
+import antlr4.ERALILexer;
+import antlr4.ERALIParser;
 import rali.util.Either;
 import rali.util.Left;
 import rali.util.Right;
@@ -91,7 +91,7 @@ public class ERALIController {
 					}
 					
 					String sql = "CREATE TABLE " + name + "(" 
-							+ String.join(", ", attributes) + ") AS SELECT DISTINCT * FROM "
+							+ String.join(", ", attributes) + ") AS SELECT * FROM "
 							+ "CSVREAD('" + f.getCanonicalPath()
 							+ "', NULL, NULL);";
 					
@@ -111,9 +111,9 @@ public class ERALIController {
 	
 	public Either execute(String command) throws SQLException {		
 		CharStream is = CharStreams.fromString(command);
-		RALILexer lexer = new RALILexer(is);
+		ERALILexer lexer = new ERALILexer(is);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		RALIParser parser = new RALIParser(tokens);
+		ERALIParser parser = new ERALIParser(tokens);
 		ParseTree tree = parser.statement();
 		ERALIVisitorImp visitor = new ERALIVisitorImp(connection);
 		String instruction = visitor.visit(tree);

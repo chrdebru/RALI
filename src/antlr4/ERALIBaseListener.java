@@ -65,6 +65,18 @@ public class ERALIBaseListener implements ERALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDelta(ERALIParser.DeltaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDelta(ERALIParser.DeltaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterConstant(ERALIParser.ConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -144,6 +156,18 @@ public class ERALIBaseListener implements ERALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitJoins(ERALIParser.JoinsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDistinct(ERALIParser.DistinctContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDistinct(ERALIParser.DistinctContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
