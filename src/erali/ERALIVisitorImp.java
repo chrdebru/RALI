@@ -9,28 +9,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import antlr4.RALIBaseVisitor;
-import antlr4.RALIParser.AliasContext;
-import antlr4.RALIParser.AndContext;
-import antlr4.RALIParser.AssignmentContext;
-import antlr4.RALIParser.AtomicformulaContext;
-import antlr4.RALIParser.AttributeContext;
-import antlr4.RALIParser.CondContext;
-import antlr4.RALIParser.ConditionContext;
-import antlr4.RALIParser.DifferenceOrUnionContext;
-import antlr4.RALIParser.InlinerelationContext;
-import antlr4.RALIParser.IntersectionContext;
-import antlr4.RALIParser.JoinsContext;
-import antlr4.RALIParser.NegationContext;
-import antlr4.RALIParser.OrContext;
-import antlr4.RALIParser.ParensContext;
-import antlr4.RALIParser.ProjectionContext;
-import antlr4.RALIParser.RelationContext;
-import antlr4.RALIParser.RenameContext;
-import antlr4.RALIParser.SelectionContext;
-import antlr4.RALIParser.TupleContext;
+import antlr4.ERALIBaseVisitor;
+import antlr4.ERALIParser.AliasContext;
+import antlr4.ERALIParser.AndContext;
+import antlr4.ERALIParser.AssignmentContext;
+import antlr4.ERALIParser.AtomicformulaContext;
+import antlr4.ERALIParser.AttributeContext;
+import antlr4.ERALIParser.CondContext;
+import antlr4.ERALIParser.ConditionContext;
+import antlr4.ERALIParser.DifferenceOrUnionContext;
+import antlr4.ERALIParser.DistinctContext;
+import antlr4.ERALIParser.InlinerelationContext;
+import antlr4.ERALIParser.IntersectionContext;
+import antlr4.ERALIParser.JoinsContext;
+import antlr4.ERALIParser.NegationContext;
+import antlr4.ERALIParser.OrContext;
+import antlr4.ERALIParser.ParensContext;
+import antlr4.ERALIParser.ProjectionContext;
+import antlr4.ERALIParser.RelationContext;
+import antlr4.ERALIParser.RenameContext;
+import antlr4.ERALIParser.SelectionContext;
+import antlr4.ERALIParser.TupleContext;
 
-public class ERALIVisitorImp extends RALIBaseVisitor<String> {
+public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	
 	private Connection connection;
 	private static int count = 0;
@@ -60,7 +61,7 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 	@Override
 	public String visitRelation(RelationContext ctx) {
 		String relation = ctx.getText();
-		return String.format("(SELECT DISTINCT * FROM %s)", relation);
+		return String.format("(SELECT * FROM %s)", relation);
 	}
 	
 	@Override
@@ -74,7 +75,7 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 		
 		String exp = visit(ctx.expression());
 		
-		return String.format("(SELECT DISTINCT %s FROM %s)", atts, exp);
+		return String.format("(SELECT %s FROM %s)", atts, exp);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 		String cond = visit(ctx.condition());
 		String exp = visit(ctx.expression());
 		
-		return String.format("(SELECT DISTINCT * FROM %s WHERE %s)", exp, cond);
+		return String.format("(SELECT * FROM %s WHERE %s)", exp, cond);
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 			connection.createStatement().execute(create + sql);
 			
 			if (error == null)
-				return String.format("(SELECT DISTINCT * FROM TABLE%s)", count);
+				return String.format("(SELECT * FROM TABLE%s)", count);
 			
 			return error;
 		} catch (SQLException e) {
@@ -194,7 +195,7 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 			String viewname = ctx.label.getText();
 			String sql = String.format("CREATE VIEW %s AS %s", viewname, query);
 			connection.createStatement().execute(sql);
-			return String.format("(SELECT DISTINCT * FROM %s)", viewname);
+			return String.format("(SELECT * FROM %s)", viewname);
 			
 		} catch (SQLException e) {
 			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
@@ -223,7 +224,7 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 			}
 						
 			String attributes = finallist.stream().collect(Collectors.joining(", "));
-			return String.format("(SELECT DISTINCT %s FROM %s)", attributes, exp);
+			return String.format("(SELECT %s FROM %s)", attributes, exp);
 			
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
@@ -234,11 +235,17 @@ public class ERALIVisitorImp extends RALIBaseVisitor<String> {
 	public String visitAlias(AliasContext ctx) {
 		return ctx.getText().replace("<-", " AS ");
 	}
+	
+	@Override
+	public String visitDistinct(DistinctContext ctx) {
+		String exp = visit(ctx.expression());
+		return String.format("(SELECT DISTINCT * FROM %s)", exp);
+	}
 
 	//*************************************************************************
 	// Cartesian Product and JOINS
 	//*************************************************************************
-	
+
 	@Override
 	public String visitJoins(JoinsContext ctx) {
 		String op = ctx.operator.getText();
