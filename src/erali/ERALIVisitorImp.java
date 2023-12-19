@@ -286,7 +286,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			if(attleft.size() > 0)
 				return String.format("[[ERROR: LHS and RHS of the Cartisian Product share attributes: %s.]]", attleft);
 			
-			return String.format("(SELECT DISTINCT * FROM %s CROSS JOIN %s)", left, right);
+			return String.format("(SELECT * FROM %s CROSS JOIN %s)", left, right);
 			
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
@@ -413,7 +413,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitUnion(DifferenceOrUnionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		return String.format("(SELECT * FROM %s UNION %s)", left, right);
+		return String.format("(SELECT * FROM %s UNION ALL %s)", left, right);
 	}
 
 	public String visitDifference(DifferenceOrUnionContext ctx) {
