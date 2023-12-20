@@ -54,9 +54,9 @@ public class RALITest {
 				+ "|                    5 |  Emily |            20 |    CS |\r\n"
 				+ "+----------------------+--------+---------------+-------+";
 		e = rc.execute("STUDENTS");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		e = rc.execute("(STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 
 		expected = "+---------------------+------------------+------------+\r\n"
 				+ "| COURSE_ID : INTEGER | COURSE_NAME      | INSTRUCTOR |\r\n"
@@ -73,9 +73,9 @@ public class RALITest {
 				+ "+---------------------+------------------+------------+";
 
 		e = rc.execute("COURSES");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		e = rc.execute("(COURSES)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 
 		expected =  "+----------------------+---------------------+\r\n"
 				+ "| STUDENT_ID : INTEGER | COURSE_ID : INTEGER |\r\n"
@@ -98,9 +98,9 @@ public class RALITest {
 				+ "+----------------------+---------------------+";
 
 		e = rc.execute("ENROLLMENTS");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		e = rc.execute("(ENROLLMENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class RALITest {
 				+ "|           2 |           4 |\r\n"
 				+ "+-------------+-------------+";
 		e = rc.execute("[A : INTEGER]{(1),(2)} PRODUCT [B : INTEGER]{(3),(4)}");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 
 		expected = "+-------------+---------------------+\r\n"
 				+ "| A : INTEGER | COURSE_ID : INTEGER |\r\n"
@@ -135,7 +135,7 @@ public class RALITest {
 				+ "+-------------+---------------------+";
 
 		e = rc.execute("[A : INTEGER]{(1),(2)} PRODUCT DIVTEST");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS PRODUCT ENROLLMENTS");
 		assertTrue(e instanceof Left);
@@ -163,7 +163,7 @@ public class RALITest {
 				+ "+----------------------+--------+---------------+-------+";
 		
 		e = rc.execute("STUDENTS UNION STUDENTS2");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS UNION ENROLLMENTS");
 		assertTrue(e instanceof Left);
@@ -183,7 +183,7 @@ public class RALITest {
 				+ "+----------------------+-------+---------------+-------+";
 		
 		e = rc.execute("STUDENTS INTERSECTION STUDENTS2");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS INTERSECTION ENROLLMENTS");
 		assertTrue(e instanceof Left);
@@ -205,7 +205,7 @@ public class RALITest {
 				+ "+----------------------+--------+---------------+-------+";
 		
 		e = rc.execute("STUDENTS MINUS STUDENTS2");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS MINUS ENROLLMENTS");
 		assertTrue(e instanceof Left);
@@ -225,7 +225,7 @@ public class RALITest {
 				+ "+----------------------+";
 		
 		e = rc.execute("ENROLLMENTS DIVISION DIVTEST");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS DIVISION DIVTEST");
 		assertTrue(e instanceof Left);
@@ -237,7 +237,7 @@ public class RALITest {
 				+ "+---+---+";
 		
 		e = rc.execute("X DIVISION Y");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 	
 	@Test
@@ -258,7 +258,7 @@ public class RALITest {
 				+ "+----------------------+---------------------+";
 		
 		e = rc.execute("ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 
 		// Join behaves as a cartesian product when no attributes are shared
 		
@@ -274,7 +274,7 @@ public class RALITest {
 				+ "|           2 |           4 |\r\n"
 				+ "+-------------+-------------+";
 		e = rc.execute("[A : INTEGER]{(1),(2)} JOIN [B : INTEGER]{(3),(4)}");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 	
 	@Test
@@ -291,7 +291,7 @@ public class RALITest {
 				+ "+---------------------+";
 		
 		e = rc.execute("[COURSE_ID : INTEGER]{(101),(103)}");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 	
 	@Test
@@ -308,7 +308,7 @@ public class RALITest {
 				+ "+----------------------+";
 		
 		e = rc.execute("PROJECT{STUDENT_ID}(ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST))");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("PROJECT{B,B}([A : INTEGER]{(1),(2)} JOIN [B : INTEGER]{(3),(4)})");		
 		assertTrue(e instanceof Left);
@@ -326,10 +326,10 @@ public class RALITest {
 				+ "+----------------------+--------+---------------+-------+";
 		
 		e = rc.execute("SELECT AGE < 20 (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("SELECT (AGE < 20) (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		expected = "+----------------------+-------+---------------+-------+\r\n"
 				+ "| STUDENT_ID : INTEGER | NAME  | AGE : INTEGER | MAJOR |\r\n"
@@ -344,10 +344,10 @@ public class RALITest {
 				+ "+----------------------+-------+---------------+-------+";
 		
 		e = rc.execute("SELECT NOT AGE < 20 (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("SELECT NOT (AGE < 20) (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		expected = "+----------------------+-------+---------------+-------+\r\n"
 				+ "| STUDENT_ID : INTEGER | NAME  | AGE : INTEGER | MAJOR |\r\n"
@@ -360,10 +360,10 @@ public class RALITest {
 				+ "+----------------------+-------+---------------+-------+";
 		
 		e = rc.execute("SELECT NOT AGE < 20 AND MAJOR = \"CS\" OR \"Bob\" = NAME (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("SELECT ((NOT (AGE < 20) AND MAJOR = \"CS\") OR \"Bob\" = NAME) (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 	
 	@Test
@@ -380,7 +380,7 @@ public class RALITest {
 				+ "+----------------------+-------+---------------+-------+";
 		
 		e = rc.execute("SELECT NOT (AGE < 20 OR MAJOR = \"CS\") (STUDENTS)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 	
 	@Test
@@ -397,7 +397,7 @@ public class RALITest {
 				+ "+----------------------+-------+---------------+";
 		
 		e = rc.execute("PROJECT {STUDENT_ID, NAME, AGE} (SELECT NOT (AGE < 20 OR MAJOR = \"CS\") (STUDENTS))");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 	
 	@Test
@@ -414,7 +414,7 @@ public class RALITest {
 				+ "+-------------+-------------+";
 		
 		e = rc.execute("[A : INTEGER]{(1),(5)} JOIN A < B [B : INTEGER]{(3),(4)}");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS JOIN NAME = AGE STUDENTS");
 		assertTrue(e instanceof Left);
@@ -436,7 +436,7 @@ public class RALITest {
 				+ "+---+---+---+";
 		
 		e = rc.execute("RENAME A<-D,B<-E(R)");		
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 				
 		e = rc.execute("RENAME A<-D,X<-E(R)");
 		assertTrue(e instanceof Left);
