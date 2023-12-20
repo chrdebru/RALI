@@ -62,7 +62,7 @@ public class ERALITest {
 				+ "|           1 |           4 |\r\n"
 				+ "+-------------+-------------+";
 		e = rc.execute("[A : INTEGER]{(1),(2),(1)} PRODUCT [B : INTEGER]{(3),(4),(4)}");	
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class ERALITest {
 				+ "+-------------+";
 		
 		e = rc.execute("[A : INTEGER]{(1),(2),(1)} UNION [A : INTEGER]{(3),(4),(4)}");	
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS UNION ENROLLMENTS");
 		assertTrue(e instanceof Left);
@@ -109,7 +109,7 @@ public class ERALITest {
 				+ "+-------------+";
 		
 		e = rc.execute("[A : INTEGER]{(1),(2),(4),(1),(4)} INTERSECTION [A : INTEGER]{(3),(4),(1),(4),(4)}");	
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		expected = "+-------------+-------------+\r\n"
 				+ "| A : INTEGER | B : INTEGER |\r\n"
@@ -122,33 +122,39 @@ public class ERALITest {
 				+ "+-------------+-------------+";
 		
 		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,1),(2,2),(4,4),(1,1),(4,4)} INTERSECTION [A : INTEGER, B : INTEGER]{(3,3),(4,4),(1,1),(4,4),(4,4)}");	
-		assertEquals(e.get().toString(), expected);
+		assertEquals(expected, e.get().toString());
 		
 		e = rc.execute("STUDENTS UNION ENROLLMENTS");
 		assertTrue(e instanceof Left);
 	}
 	
 	
-//	@Test
-//	public void testDifference() throws SQLException {
-//		String expected = null;
-//		Either e = null;
-//
-//		expected = "+----------------------+--------+---------------+-------+\r\n"
-//				+ "| STUDENT_ID : INTEGER | NAME   | AGE : INTEGER | MAJOR |\r\n"
-//				+ "+----------------------+--------+---------------+-------+\r\n"
-//				+ "|                    1 |  Alice |            20 |    CS |\r\n"
-//				+ "+----------------------+--------+---------------+-------+\r\n"
-//				+ "|                    2 |    Bob |            21 |  Math |\r\n"
-//				+ "+----------------------+--------+---------------+-------+\r\n"
-//				+ "|                    3 | Claire |            19 |   Bio |\r\n"
-//				+ "+----------------------+--------+---------------+-------+";
-//		
-//		e = rc.execute("STUDENTS MINUS STUDENTS2");		
-//		assertEquals(e.get().toString(), expected);
-//		
-//		e = rc.execute("STUDENTS MINUS ENROLLMENTS");
-//		assertTrue(e instanceof Left);
-//	}
+	@Test
+	public void testDifference() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+-------------+\r\n"
+				+ "| A : INTEGER |\r\n"
+				+ "+-------------+\r\n"
+				+ "|           2 |\r\n"
+				+ "+-------------+\r\n"
+				+ "|           1 |\r\n"
+				+ "+-------------+";
+		
+		e = rc.execute("[A : INTEGER]{(1),(2),(4),(1),(4)} MINUS [A : INTEGER]{(3),(4),(1),(4),(4)}");	
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           2 |           2 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           1 |\r\n"
+				+ "+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,1),(2,2),(4,4),(1,1),(4,4)} MINUS [A : INTEGER, B : INTEGER]{(3,3),(4,4),(1,1),(4,4),(4,4)}");	
+		assertEquals(expected, e.get().toString());
+	}
 	
 }
