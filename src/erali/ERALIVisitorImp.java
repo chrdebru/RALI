@@ -394,7 +394,50 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitIntersection(IntersectionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
+		
+		try {
+			// Get the attributes of the LHS and store them in a list
+			ResultSet rsleft = connection.createStatement().executeQuery(left);
+			ArrayList<String> attleft = new ArrayList<String>();
+			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
+				attleft.add(rsleft.getMetaData().getColumnLabel(a));
+						
+			// Get the attributes of the RHS and store them in a list
+			ResultSet rsright = connection.createStatement().executeQuery(right);
+			ArrayList<String> attright = new ArrayList<String>();
+			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
+				attright.add(rsright.getMetaData().getColumnLabel(a));
+			
+			if(!(attleft.containsAll(attright) && attright.containsAll(attleft)))
+				return String.format("[[ERROR: LHS and RHS of the Intersection have different attributes: %s.]]", attleft);
+			
+			String rownumberatt = "ROWNUMBER" + ++count;
+			
+			String sql = "(SELECT %s FROM ("
+					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s ORDER BY (SELECT 0)) AS %s, %s FROM %s"
+					+ " INTERSECT "
+					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s ORDER BY (SELECT 0)) AS %s, %s FROM %s"
+					+ "))";
+			
+			String filled = String.format(sql, 
+					attleft.stream().collect(Collectors.joining(", ")),
+					attleft.stream().collect(Collectors.joining(", ")),
+					rownumberatt,
+					attleft.stream().collect(Collectors.joining(", ")),
+					left,
+					attright.stream().collect(Collectors.joining(", ")),
+					rownumberatt,
+					attright.stream().collect(Collectors.joining(", ")),
+					right
+					);
+						
+			return filled;
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}	
+		
+		//return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
 	}
 	
 	//*************************************************************************
