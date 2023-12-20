@@ -29,6 +29,7 @@ import antlr4.ERALIParser.ProjectionContext;
 import antlr4.ERALIParser.RelationContext;
 import antlr4.ERALIParser.RenameContext;
 import antlr4.ERALIParser.SelectionContext;
+import antlr4.ERALIParser.SortContext;
 import antlr4.ERALIParser.TupleContext;
 
 public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
@@ -76,6 +77,14 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		String exp = visit(ctx.expression());
 		
 		return String.format("(SELECT %s FROM %s)", atts, exp);
+	}
+
+	@Override
+	public String visitSort(SortContext ctx) {
+		List<String> attlist = ctx.attributes.stream().map(x -> x.getText()).toList();
+		String atts = String.join(", ", attlist);
+		String exp = visit(ctx.expression());
+		return String.format("(SELECT * FROM %s ORDER BY %s)", exp, atts);
 	}
 
 	@Override

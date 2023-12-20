@@ -140,6 +140,18 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitPi(ERALIParser.PiContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Tau}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterTau(ERALIParser.TauContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Tau}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitTau(ERALIParser.TauContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -301,6 +313,16 @@ public interface ERALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProjection(ERALIParser.ProjectionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ERALIParser#sort}.
+	 * @param ctx the parse tree
+	 */
+	void enterSort(ERALIParser.SortContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ERALIParser#sort}.
+	 * @param ctx the parse tree
+	 */
+	void exitSort(ERALIParser.SortContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ERALIParser#inlinerelation}.
 	 * @param ctx the parse tree

@@ -95,6 +95,13 @@ public class ERALIBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitTau(ERALIParser.TauContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitJoins(ERALIParser.JoinsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -194,6 +201,13 @@ public class ERALIBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitProjection(ERALIParser.ProjectionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSort(ERALIParser.SortContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

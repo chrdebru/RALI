@@ -88,6 +88,13 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPi(ERALIParser.PiContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Tau}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTau(ERALIParser.TauContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -183,6 +190,12 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitProjection(ERALIParser.ProjectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ERALIParser#sort}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSort(ERALIParser.SortContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ERALIParser#inlinerelation}.
 	 * @param ctx the parse tree

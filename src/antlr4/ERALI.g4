@@ -15,6 +15,7 @@ expression
 	
 	// Unary operators first
 	| projection                                                # Pi
+	| sort                                                		# Tau
 	| selection													# Sigma
 	| rename													# Rho
 	| distinct													# Delta
@@ -87,6 +88,16 @@ attributeorvalue : (LABEL | value) ;
 
 projection :
 	'PROJECT'
+	'{' 
+		attributes+=LABEL (',' attributes+=LABEL)* 
+	'}'
+	'('
+		expression
+	')'
+;
+
+sort :
+	'SORT'
 	'{' 
 		attributes+=LABEL (',' attributes+=LABEL)* 
 	'}'

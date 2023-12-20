@@ -149,6 +149,18 @@ public class ERALIBaseListener implements ERALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTau(ERALIParser.TauContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTau(ERALIParser.TauContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterJoins(ERALIParser.JoinsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -324,6 +336,18 @@ public class ERALIBaseListener implements ERALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitProjection(ERALIParser.ProjectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSort(ERALIParser.SortContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSort(ERALIParser.SortContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
