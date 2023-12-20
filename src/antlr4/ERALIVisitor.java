@@ -207,4 +207,10 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitValue(ERALIParser.ValueContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ERALIParser#null}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNull(ERALIParser.NullContext ctx);
 }

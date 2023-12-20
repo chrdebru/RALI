@@ -341,4 +341,14 @@ public interface ERALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitValue(ERALIParser.ValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ERALIParser#null}.
+	 * @param ctx the parse tree
+	 */
+	void enterNull(ERALIParser.NullContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ERALIParser#null}.
+	 * @param ctx the parse tree
+	 */
+	void exitNull(ERALIParser.NullContext ctx);
 }

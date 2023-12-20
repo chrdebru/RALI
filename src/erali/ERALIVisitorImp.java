@@ -128,7 +128,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			
 			String create = "CREATE TABLE TABLE" + count + "(" 
 					+ String.join(", ", attributes) + ");";
-			
+						
 			connection.createStatement().execute(create + sql);
 			
 			if (error == null)

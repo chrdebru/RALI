@@ -113,21 +113,23 @@ tuple:
 ;
 
 value:
-	INTEGER | DECIMAL | STRING | DATE
+	INTEGER | DECIMAL | STRING | DATE | null
 ;
 
+null : 'NULL' ;
 
 /*
  * Lexer Rules
  */
  
 RESERVED 	: 'TIMES' | 'DIVISION' | 'INTERSECTION' | 'UNION' | 'PRODUCT' | 'DIFFERENCE' 
-			  'STRING' | 'INTEGER' | 'DECIMAL' | 'DATE'  | 'DISTINCT' ;
+			  'STRING' | 'INTEGER' | 'DECIMAL' | 'DATE'  | 'DISTINCT';
 
-LABEL : [A-Z] ([A-Z] | [0-9] | '_')*;
-INTEGER : '-'? [0-9]+;
-DECIMAL : '-'? [0-9]+ ('.' [0-9]+)?;
+LABEL : [A-Z] ([A-Z] | [0-9] | '_')* ;
+INTEGER : '-'? [0-9]+ ;
+DECIMAL : '-'? [0-9]+ ('.' [0-9]+)? ;
 STRING : '"' (~[\r\n"])* '"' ;
-DATE: [0-9][0-9][0-9][0-9]'-'[0-9][0-9]'-'[0-9][0-9];
+DATE: [0-9][0-9][0-9][0-9]'-'[0-9][0-9]'-'[0-9][0-9] ;
+
 
 WHITESPACE: [ \r\n\t]+ -> skip;

@@ -372,6 +372,18 @@ public class ERALIBaseListener implements ERALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitValue(ERALIParser.ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNull(ERALIParser.NullContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNull(ERALIParser.NullContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

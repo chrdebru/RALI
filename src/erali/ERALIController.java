@@ -186,7 +186,7 @@ public class ERALIController {
 		while(rs.next()) {
 			record = new String[columnCount];
 			for(int i = 0; i < columnCount; i++) {
-				record[i] = rs.getObject(i + 1).toString();
+				record[i] = rs.getObject(i + 1) == null ? "NULL" : rs.getObject(i + 1).toString();
 			}
 			records.add(record);
 		}

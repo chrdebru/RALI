@@ -157,4 +157,48 @@ public class ERALITest {
 		assertEquals(expected, e.get().toString());
 	}
 	
+	@Test
+	public void testNULL() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |        NULL |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           4 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           2 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           2 |        NULL |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           2 |           4 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|        NULL |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|        NULL |        NULL |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|        NULL |           4 |\r\n"
+				+ "+-------------+-------------+";
+		e = rc.execute("[A : INTEGER]{(1),(2),(NULL)} PRODUCT [B : INTEGER]{(3),(NULL),(4)}");	
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+\r\n"
+				+ "| A : INTEGER |\r\n"
+				+ "+-------------+\r\n"
+				+ "|        NULL |\r\n"
+				+ "+-------------+\r\n"
+				+ "|        NULL |\r\n"
+				+ "+-------------+\r\n"
+				+ "|        NULL |\r\n"
+				+ "+-------------+\r\n"
+				+ "|        NULL |\r\n"
+				+ "+-------------+";
+		e = rc.execute("[A : INTEGER]{(NULL),(NULL)} UNION [A : INTEGER]{(NULL),(NULL)}");	
+		assertEquals(expected, e.get().toString());
+	}
+	
 }
