@@ -44,30 +44,6 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitIntersection(ERALIParser.IntersectionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterRelation(ERALIParser.RelationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitRelation(ERALIParser.RelationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Delta}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDelta(ERALIParser.DeltaContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Delta}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDelta(ERALIParser.DeltaContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code Constant}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -104,6 +80,78 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitSigma(ERALIParser.SigmaContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code SetIntersection}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSetIntersection(ERALIParser.SetIntersectionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SetIntersection}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSetIntersection(ERALIParser.SetIntersectionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Tau}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterTau(ERALIParser.TauContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Tau}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitTau(ERALIParser.TauContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SetDifferenceOrUnion}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSetDifferenceOrUnion(ERALIParser.SetDifferenceOrUnionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SetDifferenceOrUnion}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSetDifferenceOrUnion(ERALIParser.SetDifferenceOrUnionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Joins}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoins(ERALIParser.JoinsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Joins}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoins(ERALIParser.JoinsContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Relation}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelation(ERALIParser.RelationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Relation}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelation(ERALIParser.RelationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Delta}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterDelta(ERALIParser.DeltaContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Delta}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitDelta(ERALIParser.DeltaContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Rho}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -139,30 +187,6 @@ public interface ERALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPi(ERALIParser.PiContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Tau}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterTau(ERALIParser.TauContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Tau}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitTau(ERALIParser.TauContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Joins}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterJoins(ERALIParser.JoinsContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Joins}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitJoins(ERALIParser.JoinsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ERALIParser#distinct}.
 	 * @param ctx the parse tree

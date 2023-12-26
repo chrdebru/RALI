@@ -1,6 +1,7 @@
 package erali;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import antlr4.ERALIParser.ProjectionContext;
 import antlr4.ERALIParser.RelationContext;
 import antlr4.ERALIParser.RenameContext;
 import antlr4.ERALIParser.SelectionContext;
+import antlr4.ERALIParser.SetDifferenceOrUnionContext;
+import antlr4.ERALIParser.SetIntersectionContext;
 import antlr4.ERALIParser.SortContext;
 import antlr4.ERALIParser.TupleContext;
 
@@ -137,7 +140,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			
 			String create = "CREATE TABLE TABLE" + count + "(" 
 					+ String.join(", ", attributes) + ");";
-						
+
 			connection.createStatement().execute(create + sql);
 			
 			if (error == null)
@@ -173,7 +176,10 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		for(int i = 0; i < size; i++) {
 			if(i != 0) insert += ", ";
 			String type = attributetypes.get(i);
-			if(type.equals(types.get(DATE)))
+			
+			if(values.get(i).equals("NULL"))
+				insert += values.get(i);
+			else if(type.equals(types.get(DATE)))
 				insert += "'" + values.get(i) + "'";
 			else if (type.equals(types.get(STRING)))
 				insert += values.get(i).replace("\"", "'");
@@ -265,8 +271,12 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		
 		if("PRODUCT".equals(op))
 			return visitCartesianProduct(ctx);
-		else if("DIVISION".equals(op))
-			return visitDivision(ctx);
+		else if(op.contains("DIVISION"))
+			if(ctx.operator.set != null)
+				return visitSetDivision(ctx);
+			else
+				return visitDivision(ctx);
+				//return "[[ERROR: division on multisets not supported.]]";
 		else if(cond != null)
 			return visitThetaJoin(ctx);
 		else
@@ -338,7 +348,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		}	
 	}
 	
-	public String visitDivision(JoinsContext ctx) {
+	public String visitSetDivision(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
 		
@@ -395,10 +405,175 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		}
 	}
 	
+	public String visitDivision(JoinsContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		
+		try {
+			// Get the attributes of the LHS and store them in a list
+			ResultSet rsleft = connection.createStatement().executeQuery(left);
+			ArrayList<String> attleft = new ArrayList<String>();
+			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
+				attleft.add(rsleft.getMetaData().getColumnLabel(a));
+						
+			// Get the attributes of the RHS and store them in a list
+			ResultSet rsright = connection.createStatement().executeQuery(right);
+			ArrayList<String> attright = new ArrayList<String>();
+			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
+				attright.add(rsright.getMetaData().getColumnLabel(a));
+			
+			if(!attleft.containsAll(attright))
+				return "[[ERROR: Schema of LHS does not contain all attributes of RHS.]]";
+			
+			if(attleft.size() == attright.size())
+				return "[[ERROR: LHS and RHS cannot have the same schema for a division.]]";
+			
+			// We now remove RHS's attributes from the LHS for the query
+			attleft.removeAll(attright);
+			
+			String attleftstring = attleft.stream().collect(Collectors.joining(", "));
+			String attrightstring = attright.stream().collect(Collectors.joining(", "));
+			
+			// Get all the tuples from LEFT
+			String lquery = String.format("SELECT * FROM %s ORDER BY %s", left, attleftstring);
+			List<Map<String, Object>> L = queryToDictionary(lquery);
+			
+			// Get DISTINCT S1-S2 from LEFT
+			String laquery = String.format("SELECT DISTINCT %s FROM %s ORDER BY %s", attleftstring, left, attleftstring);
+			List<Map<String, Object>> LA = queryToDictionary(laquery);
+			
+			// Get all the tuples from RIGHT
+			String rquery = String.format("SELECT * FROM %s ORDER BY %s", right, attrightstring);
+			List<Map<String, Object>> R = queryToDictionary(rquery);
+			
+			List<Map<String, Object>> toKeep = new ArrayList<Map<String, Object>>();
+			
+			while(!LA.isEmpty()) {				
+				// Get an LA from the list
+				Map<String, Object> la = LA.get(0);
+				
+				// Test if la has all occurrences of R in L
+				// If yes, *keep* la and remove these occurrences
+				if(hasAllCombinationsIn(la, R, L)) {
+					removeAllCombinationsIn(la, R, L);
+					toKeep.add(la);
+				} 				
+				// If no, remove la from the list
+				else {
+					LA.remove(la);
+				}
+			}
+			
+			// Create a new table based on division.
+			List<String> attributes = new ArrayList<String>();
+			ResultSet res = connection.createStatement().executeQuery(laquery);
+			for(int i = 1; i <= res.getMetaData().getColumnCount(); i++) {
+				String clazz = res.getMetaData().getColumnClassName(i);
+
+				if(clazz.equals("java.lang.String"))
+					clazz = types.get(STRING);
+				else if(clazz.equals("java.lang.Integer"))
+					clazz = types.get(INTEGER);
+				else if(clazz.equals("java.lang.Double"))
+					clazz = types.get(DECIMAL);
+				else
+					clazz = types.get(DATE);
+				
+				attributes.add(res.getMetaData().getColumnName(i) + " " + clazz);
+			}
+			
+			String create = String.format("CREATE TABLE TABLE%s (%s);", ++count, String.join(", ", attributes));
+			connection.createStatement().execute(create);
+			
+			for(Map<String, Object> t : toKeep) {
+				String atts = "";
+				String vals = "";
+				
+				boolean first = true;
+				
+				for(String k : t.keySet()) {
+					if(first)
+						first = false;
+					else {
+						atts += ", ";
+						vals += ", ";
+					}
+					
+					atts += k;
+					
+					Object o = t.get(k);
+					if (o == null) 
+						vals += "NULL";
+					else if(o instanceof String)
+						vals += "'" + o + "'";
+					else if(o instanceof Date)
+						vals += "'" + o + "'";
+					else
+						vals += o;
+				}
+				
+				String insert = String.format("INSERT INTO TABLE%s (%s) VALUES (%s)", count, atts, vals);
+				connection.createStatement().execute(insert);
+			}
+			
+			return String.format("(SELECT * FROM TABLE%s)", count);
+			
+		} catch (SQLException e) {
+			return String.format("[[ERROR: %s.]]", e.getMessage());
+		}
+	}
+	
+	private void removeAllCombinationsIn(
+			Map<String, Object> la, 
+			List<Map<String, Object>> R,
+			List<Map<String, Object>> L) {
+		
+		for(Map<String, Object> m : R) {
+			Map<String, Object> newtuple = new HashMap<String,Object>();
+			newtuple.putAll(la);
+			newtuple.putAll(m);
+			L.remove(newtuple);
+		}
+	}
+
+	private boolean hasAllCombinationsIn(
+			Map<String, Object> la, 
+			List<Map<String, Object>> R,
+			List<Map<String, Object>> L) {
+		
+		List<Map<String, Object>> Lcopy = new ArrayList<Map<String, Object>>(L);
+		
+		for(Map<String, Object> m : R) {
+			Map<String, Object> newtuple = new HashMap<String,Object>();
+			newtuple.putAll(la);
+			newtuple.putAll(m);
+			
+			if(Lcopy.contains(newtuple))
+				Lcopy.remove(newtuple);
+			else return false;
+		}
+		
+		return true;
+	}
+
+	private List<Map<String, Object>> queryToDictionary(String query) throws SQLException {
+		ResultSet R = connection.createStatement().executeQuery(query);
+		List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+		int n = R.getMetaData().getColumnCount();
+		while (R.next()) {
+		    Map<String, Object> map = new HashMap<String, Object>();
+			for (int i = 1; i <= n; i++) {
+				map.put(R.getMetaData().getColumnName(i), R.getObject(i));
+		    }
+			maps.add(map);
+		}
+		return maps;
+	}
+	
 	//*************************************************************************
 	// INTERSECTION
-	//*************************************************************************
-	
+	//*************************************************************************	
+
 	@Override
 	public String visitIntersection(IntersectionContext ctx) {
 		String left = visit(ctx.left);
@@ -423,9 +598,9 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			String rownumberatt = "ROWNUMBER" + ++count;
 			
 			String sql = "(SELECT %s FROM ("
-					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s ORDER BY (SELECT 0)) AS %s, %s FROM %s"
+					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ " INTERSECT "
-					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s ORDER BY (SELECT 0)) AS %s, %s FROM %s"
+					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ "))";
 			
 			String filled = String.format(sql, 
@@ -445,6 +620,13 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
+	}
+	
+	@Override
+	public String visitSetIntersection(SetIntersectionContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
 	}
 	
 	//*************************************************************************
@@ -489,9 +671,9 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			String rownumberatt = "ROWNUMBER" + ++count;
 			
 			String sql = "(SELECT %s FROM ("
-					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s ORDER BY (SELECT 0)) AS %s, %s FROM %s"
+					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ " EXCEPT "
-					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s ORDER BY (SELECT 0)) AS %s, %s FROM %s"
+					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ "))";
 			
 			String filled = String.format(sql, 
@@ -505,11 +687,33 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					attright.stream().collect(Collectors.joining(", ")),
 					right
 					);
-						
+			
 			return filled;
 			
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
+	}
+	
+	@Override
+	public String visitSetDifferenceOrUnion(SetDifferenceOrUnionContext ctx) {
+		String op = ctx.operator.getText();
+		
+		if("MINUS".equals(op))
+			return visitSetDifference(ctx);
+		else
+			return visitSetUnion(ctx);
+	}	
+	
+	public String visitSetUnion(SetDifferenceOrUnionContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT * FROM %s UNION %s)", left, right);
+	}
+
+	public String visitSetDifference(SetDifferenceOrUnionContext ctx) {
+		String left = visit(ctx.left);
+		String right = visit(ctx.right);
+		return String.format("(SELECT * FROM %s EXCEPT %s)", left, right);
 	}
 }

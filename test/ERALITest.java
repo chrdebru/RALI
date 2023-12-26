@@ -1,5 +1,5 @@
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
 
@@ -158,6 +158,53 @@ public class ERALITest {
 	}
 	
 	@Test
+	public void testDivision() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+-------------+---+\r\n"
+				+ "| A : INTEGER | X |\r\n"
+				+ "+-------------+---+\r\n"
+				+ "|           1 | 1 |\r\n"
+				+ "+-------------+---+\r\n"
+				+ "|           2 | 1 |\r\n"
+				+ "+-------------+---+";
+		
+		e = rc.execute("[A : INTEGER, X, B, Y]{(1,1,1,0),(1,1,1,0),(1,1,2,0),(1,1,2,0),(2,1,1,0),(2,1,1,0),(2,1,2,0),(3,1,1,0),(3,1,2,0),(4,1,2,0),(4,1,2,0),(5,1,5,0)} DIVISION [B,Y]{(1,0),(2,0),(1,0)}");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+----------------------+------------+\r\n"
+				+ "| A : DOUBLE PRECISION | X : DATE   |\r\n"
+				+ "+----------------------+------------+\r\n"
+				+ "|                  1.0 | 2023-12-25 |\r\n"
+				+ "+----------------------+------------+\r\n"
+				+ "|                  1.0 | 2023-12-25 |\r\n"
+				+ "+----------------------+------------+\r\n"
+				+ "|                  2.0 | 2023-12-25 |\r\n"
+				+ "+----------------------+------------+\r\n"
+				+ "|                  3.0 | 2023-12-25 |\r\n"
+				+ "+----------------------+------------+";
+		
+		e = rc.execute("[A : DECIMAL, X : DATE, B, Y]{(1,2023-12-25,1,0),(1,2023-12-25,1,0),(1,2023-12-25,2,0),(1,2023-12-25,2,0),(2,2023-12-25,1,0),(2,2023-12-25,1,0),(2,2023-12-25,2,0),(3,2023-12-25,1,0),(3,2023-12-25,2,0),(4,2023-12-25,2,0),(4,2023-12-25,2,0),(5,2023-12-25,5,0)} DIVISION [B,Y]{(2,0),(1,0)}");		
+		assertEquals(expected, e.get().toString());
+
+		expected = "+----------------------+----------+\r\n"
+				+ "| A : DOUBLE PRECISION | X : DATE |\r\n"
+				+ "+----------------------+----------+\r\n"
+				+ "|                  1.0 |     NULL |\r\n"
+				+ "+----------------------+----------+\r\n"
+				+ "|                  1.0 |     NULL |\r\n"
+				+ "+----------------------+----------+\r\n"
+				+ "|                  2.0 |     NULL |\r\n"
+				+ "+----------------------+----------+\r\n"
+				+ "|                  3.0 |     NULL |\r\n"
+				+ "+----------------------+----------+";
+		
+		e = rc.execute("[A : DECIMAL, X : DATE, B, Y]{(1,NULL,1,0),(1,NULL,1,0),(1,NULL,2,0),(1,NULL,2,0),(2,NULL,1,0),(2,NULL,1,0),(2,NULL,2,0),(3,NULL,1,0),(3,NULL,2,0),(4,NULL,2,0),(4,NULL,2,0),(5,NULL,5,0)} DIVISION [B,Y]{(2,0),(1,0)}");		
+		assertEquals(expected, e.get().toString());
+	}
+	
+	@Test
 	public void testNULL() throws SQLException {
 		String expected = null;
 		Either e = null;
@@ -267,6 +314,105 @@ public class ERALITest {
 				+ "+-------------+-------------+";
 		
 		e = rc.execute("SORT {B,A} ([A : INTEGER]{(2),(1),(NULL)} PRODUCT [B : INTEGER]{(3),(NULL),(4)})");	
+		assertEquals(expected, e.get().toString());
+	}
+	
+	@Test
+	public void testSetUnion() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+----------------------+--------+---------------+-------+\r\n"
+				+ "| STUDENT_ID : INTEGER | NAME   | AGE : INTEGER | MAJOR |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    1 |  Alice |            20 |    CS |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    2 |    Bob |            21 |  Math |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    3 | Claire |            19 |   Bio |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    4 |  David |            22 |  Econ |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    5 |  Emily |            20 |    CS |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    6 |  Chris |            25 |    CS |\r\n"
+				+ "+----------------------+--------+---------------+-------+";
+		
+		e = rc.execute("STUDENTS SET UNION STUDENTS2");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("STUDENTS SET UNION ENROLLMENTS");
+		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testSetIntersection() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+----------------------+-------+---------------+-------+\r\n"
+				+ "| STUDENT_ID : INTEGER | NAME  | AGE : INTEGER | MAJOR |\r\n"
+				+ "+----------------------+-------+---------------+-------+\r\n"
+				+ "|                    4 | David |            22 |  Econ |\r\n"
+				+ "+----------------------+-------+---------------+-------+\r\n"
+				+ "|                    5 | Emily |            20 |    CS |\r\n"
+				+ "+----------------------+-------+---------------+-------+";
+		
+		e = rc.execute("STUDENTS SET INTERSECTION STUDENTS2");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("STUDENTS SET INTERSECTION ENROLLMENTS");
+		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testSetDifference() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+----------------------+--------+---------------+-------+\r\n"
+				+ "| STUDENT_ID : INTEGER | NAME   | AGE : INTEGER | MAJOR |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    1 |  Alice |            20 |    CS |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    2 |    Bob |            21 |  Math |\r\n"
+				+ "+----------------------+--------+---------------+-------+\r\n"
+				+ "|                    3 | Claire |            19 |   Bio |\r\n"
+				+ "+----------------------+--------+---------------+-------+";
+		
+		e = rc.execute("STUDENTS SET MINUS STUDENTS2");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("STUDENTS SET MINUS ENROLLMENTS");
+		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testSetDivision() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+----------------------+\r\n"
+				+ "| STUDENT_ID : INTEGER |\r\n"
+				+ "+----------------------+\r\n"
+				+ "|                    1 |\r\n"
+				+ "+----------------------+\r\n"
+				+ "|                    5 |\r\n"
+				+ "+----------------------+";
+		
+		e = rc.execute("ENROLLMENTS SET DIVISION DIVTEST");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("STUDENTS SET DIVISION DIVTEST");
+		assertTrue(e instanceof Left);
+		
+		expected = "+---+---+\r\n"
+				+ "| A | B |\r\n"
+				+ "+---+---+\r\n"
+				+ "| a | b |\r\n"
+				+ "+---+---+";
+		
+		e = rc.execute("X SET DIVISION Y");		
 		assertEquals(expected, e.get().toString());
 	}
 	

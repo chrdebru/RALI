@@ -27,12 +27,20 @@ expression
 	  right=expression											# Joins
 
 	// Then intersection
-	| left=expression operator='INTERSECTION' right=expression 	# Intersection
+	| left=expression 'INTERSECTION' right=expression 			# Intersection
+	// Then set intersection
+	| left=expression 'SET' 'INTERSECTION' right=expression 	# SetIntersection
 
 	// Then difference and union
 	| left=expression 
 	  operator=diffUnionOperator 
 	  right=expression 	    									# DifferenceOrUnion
+	  
+	// Then difference and union
+	| left=expression 
+	  'SET' operator=diffUnionOperator 
+	  right=expression 	    									# SetDifferenceOrUnion
+	  
 	
 	| '(' expression ')'										# Parens
 	;
@@ -42,7 +50,7 @@ distinct :
 ;
 
 joinsOperator:
-	'PRODUCT'| 'JOIN'| 'DIVISION'
+	'PRODUCT' | 'JOIN' | (set='SET')? 'DIVISION'
 ;
 
 diffUnionOperator:

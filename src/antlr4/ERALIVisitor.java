@@ -32,20 +32,6 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntersection(ERALIParser.IntersectionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelation(ERALIParser.RelationContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Delta}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDelta(ERALIParser.DeltaContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code Constant}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -67,6 +53,48 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSigma(ERALIParser.SigmaContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code SetIntersection}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetIntersection(ERALIParser.SetIntersectionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Tau}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTau(ERALIParser.TauContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code SetDifferenceOrUnion}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSetDifferenceOrUnion(ERALIParser.SetDifferenceOrUnionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Joins}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoins(ERALIParser.JoinsContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Relation}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelation(ERALIParser.RelationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Delta}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDelta(ERALIParser.DeltaContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Rho}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -87,20 +115,6 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPi(ERALIParser.PiContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Tau}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTau(ERALIParser.TauContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Joins}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitJoins(ERALIParser.JoinsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ERALIParser#distinct}.
 	 * @param ctx the parse tree
