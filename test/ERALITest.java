@@ -416,4 +416,129 @@ public class ERALITest {
 		assertEquals(expected, e.get().toString());
 	}
 	
+	@Test
+	public void testRename() throws SQLException {
+		String expected = "";
+		Either e = null;
+		
+		expected = "+---+---+---+\r\n"
+				+ "| D | E | C |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| a | b | c |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| d | a | f |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| c | b | d |\r\n"
+				+ "+---+---+---+";
+		
+		e = rc.execute("RENAME A<-D,B<-E(R)");		
+		assertEquals(expected, e.get().toString());
+				
+		e = rc.execute("RENAME A<-D,X<-E(R)");
+		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testProjection() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+----------------------+\r\n"
+				+ "| STUDENT_ID : INTEGER |\r\n"
+				+ "+----------------------+\r\n"
+				+ "|                    1 |\r\n"
+				+ "+----------------------+\r\n"
+				+ "|                    1 |\r\n"
+				+ "+----------------------+\r\n"
+				+ "|                    5 |\r\n"
+				+ "+----------------------+\r\n"
+				+ "|                    5 |\r\n"
+				+ "+----------------------+";
+		
+		e = rc.execute("PROJECT{STUDENT_ID}(ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST))");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("PROJECT{B,B}([A : INTEGER]{(1),(2)} JOIN [B : INTEGER]{(3),(4)})");		
+		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testGeneralizedProjection1() throws SQLException {
+		String expected = "";
+		Either e = null;
+		
+		expected = "+---+---+---+\r\n"
+				+ "| D | A | C |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| a | b | c |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| d | a | f |\r\n"
+				+ "+---+---+---+\r\n"
+				+ "| c | b | d |\r\n"
+				+ "+---+---+---+";
+		
+		e = rc.execute("PROJECT{A->D,B->A,C}(R)");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+---+---+\r\n"
+				+ "| D | A |\r\n"
+				+ "+---+---+\r\n"
+				+ "| a | b |\r\n"
+				+ "+---+---+\r\n"
+				+ "| d | a |\r\n"
+				+ "+---+---+\r\n"
+				+ "| c | b |\r\n"
+				+ "+---+---+";
+		
+		e = rc.execute("PROJECT{A->D,B->A}(R)");		
+		assertEquals(expected, e.get().toString());
+				
+		e = rc.execute("PROJECT{D->A,E->X}(R)");
+		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testGeneralizedProjection2() throws SQLException {
+		String expected = "";
+		Either e = null;
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| D : INTEGER | E : INTEGER | F : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           2 |           6 |           5 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           6 |          10 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           4 |           8 |          10 |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("PROJECT{A+1->D,B*C->E,C+B*A->F}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(4,1,6),(3,2,4)})");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("PROJECT{A+1->D,B*C->E,C+B*A->D}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(4,1,6),(3,2,4)})");		
+		assertTrue(e instanceof Left);
+		
+		e = rc.execute("PROJECT{A+1/(5 - 5)->D}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(4,1,6),(3,2,4)})");		
+		assertTrue(e instanceof Left);
+		
+		expected = "+-------------+-------------+\r\n"
+				+ "| D : INTEGER | E : INTEGER |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|        NULL |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           5 |           1 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           5 |        NULL |\r\n"
+				+ "+-------------+-------------+";
+		
+		e = rc.execute("PROJECT{A+B->D,C/A->E}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,NULL,3),(4,1,6),(3,2,NULL)})");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("PROJECT{A+B->D,C/A->e}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,NULL,3),(4,1,6),(3,2,NULL)})");		
+		assertTrue(e instanceof Left);
+		
+		e = rc.execute("PROJECT{A+B->D,C/A->E}([A, B, C]{(1,NULL,3),(4,1,6),(3,2,NULL)})");		
+		assertTrue(e instanceof Left);
+	}
+	
 }

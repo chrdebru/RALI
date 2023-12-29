@@ -26,7 +26,9 @@ import antlr4.ERALIParser.JoinsContext;
 import antlr4.ERALIParser.NegationContext;
 import antlr4.ERALIParser.OrContext;
 import antlr4.ERALIParser.ParensContext;
+import antlr4.ERALIParser.ProjectionAttributeContext;
 import antlr4.ERALIParser.ProjectionContext;
+import antlr4.ERALIParser.ProjectionExpressionContext;
 import antlr4.ERALIParser.RelationContext;
 import antlr4.ERALIParser.RenameContext;
 import antlr4.ERALIParser.SelectionContext;
@@ -70,16 +72,29 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	
 	@Override
 	public String visitProjection(ProjectionContext ctx) {
-		List<String> attlist = ctx.attributes.stream().map(x -> x.getText()).toList();
+		List<String> attlist = ctx.attributes.stream().map(x -> visitProjectionAttribute(x)).toList();
 		String atts = String.join(", ", attlist);
 		
-		if(attlist.size() != attlist.stream().distinct().toList().size()) {
+		if(attlist.size() != ctx.attributes.stream().map(x -> x.attributename.getText()).distinct().toList().size()) {
 			return String.format("[[ERROR: Duplicate attribute names in selection: %s.]]", atts);
 		}
 		
 		String exp = visit(ctx.expression());
-		
+				
 		return String.format("(SELECT %s FROM %s)", atts, exp);
+	}
+	
+	@Override
+	public String visitProjectionAttribute(ProjectionAttributeContext ctx) {
+		if(ctx.exp == null)
+			return ctx.getText();
+		else
+			return visitProjectionExpression(ctx.exp) + " AS " + ctx.attributename.getText();
+	}
+
+	@Override
+	public String visitProjectionExpression(ProjectionExpressionContext ctx) {
+		return ctx.getText();
 	}
 
 	@Override

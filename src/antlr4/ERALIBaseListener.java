@@ -365,6 +365,30 @@ public class ERALIBaseListener implements ERALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterProjectionAttribute(ERALIParser.ProjectionAttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitProjectionAttribute(ERALIParser.ProjectionAttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterProjectionExpression(ERALIParser.ProjectionExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitProjectionExpression(ERALIParser.ProjectionExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSort(ERALIParser.SortContext ctx) { }
 	/**
 	 * {@inheritDoc}

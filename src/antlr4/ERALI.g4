@@ -97,11 +97,22 @@ attributeorvalue : (LABEL | value) ;
 projection :
 	'PROJECT'
 	'{' 
-		attributes+=LABEL (',' attributes+=LABEL)* 
+		attributes+=projectionAttribute (',' attributes+=projectionAttribute)* 
 	'}'
 	'('
 		expression
 	')'
+;
+
+projectionAttribute :
+	(exp=projectionExpression '->')? attributename=LABEL
+;
+
+projectionExpression
+	: projectionExpression op=('*' | '/') projectionExpression
+    | projectionExpression op=('+' | '-') projectionExpression
+    | '(' projectionExpression ')'
+    | (LABEL | DECIMAL | INTEGER)
 ;
 
 sort :

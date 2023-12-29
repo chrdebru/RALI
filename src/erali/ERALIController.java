@@ -16,9 +16,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 
@@ -109,22 +111,25 @@ public class ERALIController {
 		statement.close();
 	}
 	
-	public Either execute(String command) throws SQLException {		
-		CharStream is = CharStreams.fromString(command);
-		ERALILexer lexer = new ERALILexer(is);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		ERALIParser parser = new ERALIParser(tokens);
-		ParseTree tree = parser.statement();
-		ERALIVisitorImp visitor = new ERALIVisitorImp(connection);
-		String instruction = visitor.visit(tree);
-		
-		if(instruction == null)
-			return new Right("");
-		
-		try {
+	public Either execute(String command) throws SQLException {				
+		try {			
+			CharStream is = CharStreams.fromString(command);
+			ERALILexer lexer = new ERALILexer(is);
+			CommonTokenStream tokens = new CommonTokenStream(lexer);
+			ERALIParser parser = new ERALIParser(tokens);
+			parser.setErrorHandler(new BailErrorStrategy());
+			ParseTree tree = parser.statement();
+			ERALIVisitorImp visitor = new ERALIVisitorImp(connection);
+			String instruction = visitor.visit(tree);
+			
+			if(instruction == null)
+				return new Right("");
+			
 			checkConstainsError(instruction);
 			ResultSet rs = connection.createStatement().executeQuery(instruction);
 			return new Right(toASCIITable(rs));
+		} catch(ParseCancellationException e) {
+			return new Left("Error in ERALI expression.");
 		} catch (JdbcSQLSyntaxErrorException e) {
 			String msg = null;
 			switch (e.getErrorCode()) {
@@ -155,6 +160,12 @@ public class ERALIController {
 				msg = msg.replace("Problem creating constant relation: View \"", "");
 				int i = msg.indexOf("\"");
 				msg = "Relation already exists: " + msg.substring(0, i);
+			}
+			else if(msg.contains("Division by zero")) {
+				msg = "Division by zero in one of the expressions.";
+			}
+			else if(msg.contains("Feature not supported")) {
+				msg = "Arethmetic expressions on strings and dates are not supported.";
 			}
 			
 			return new Left(msg);

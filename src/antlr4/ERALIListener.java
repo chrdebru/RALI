@@ -338,6 +338,26 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitProjection(ERALIParser.ProjectionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ERALIParser#projectionAttribute}.
+	 * @param ctx the parse tree
+	 */
+	void enterProjectionAttribute(ERALIParser.ProjectionAttributeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ERALIParser#projectionAttribute}.
+	 * @param ctx the parse tree
+	 */
+	void exitProjectionAttribute(ERALIParser.ProjectionAttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ERALIParser#projectionExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterProjectionExpression(ERALIParser.ProjectionExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ERALIParser#projectionExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitProjectionExpression(ERALIParser.ProjectionExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ERALIParser#sort}.
 	 * @param ctx the parse tree
 	 */

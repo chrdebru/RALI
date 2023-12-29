@@ -205,6 +205,18 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProjection(ERALIParser.ProjectionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ERALIParser#projectionAttribute}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProjectionAttribute(ERALIParser.ProjectionAttributeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ERALIParser#projectionExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProjectionExpression(ERALIParser.ProjectionExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ERALIParser#sort}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
