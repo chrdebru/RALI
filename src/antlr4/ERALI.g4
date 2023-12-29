@@ -15,6 +15,7 @@ expression
 	
 	// Unary operators first
 	| projection                                                # Pi
+	| aggregation												# Gamma
 	| sort                                                		# Tau
 	| selection													# Sigma
 	| rename													# Rho
@@ -101,6 +102,22 @@ projection :
 	'}'
 	'('
 		expression
+	')'
+;
+
+aggregation :
+	'GROUP'
+	(by=LABEL ',')?
+	aggregationOperation '->' attributename=LABEL
+	'('
+		expression
+	')'
+;
+
+aggregationOperation :
+	op = ('AVG' | 'SUM' | 'MIN' | 'MAX' | 'COUNT')
+	'('
+		projectionExpression
 	')'
 ;
 

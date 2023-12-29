@@ -137,6 +137,18 @@ public class ERALIBaseListener implements ERALIListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGamma(ERALIParser.GammaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGamma(ERALIParser.GammaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterRelation(ERALIParser.RelationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -360,6 +372,30 @@ public class ERALIBaseListener implements ERALIListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitProjection(ERALIParser.ProjectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAggregation(ERALIParser.AggregationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAggregation(ERALIParser.AggregationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAggregationOperation(ERALIParser.AggregationOperationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAggregationOperation(ERALIParser.AggregationOperationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

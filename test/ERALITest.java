@@ -534,11 +534,85 @@ public class ERALITest {
 		e = rc.execute("PROJECT{A+B->D,C/A->E}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,NULL,3),(4,1,6),(3,2,NULL)})");		
 		assertEquals(expected, e.get().toString());
 		
-		e = rc.execute("PROJECT{A+B->D,C/A->e}([A : INTEGER, B : INTEGER, C: INTEGER]{(1,NULL,3),(4,1,6),(3,2,NULL)})");		
-		assertTrue(e instanceof Left);
-		
 		e = rc.execute("PROJECT{A+B->D,C/A->E}([A, B, C]{(1,NULL,3),(4,1,6),(3,2,NULL)})");		
 		assertTrue(e instanceof Left);
+	}
+	
+	@Test
+	public void testAggregation() throws SQLException {
+		String expected = "";
+		Either e = null;
+		
+		expected = "+-------------+------------+\r\n"
+				+ "| A : INTEGER | D : BIGINT |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           1 |         12 |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           2 |          8 |\r\n"
+				+ "+-------------+------------+";
+		
+		e = rc.execute("GROUP A, SUM(B*C)->D ([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(1,1,6),(2,2,4)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+------------+\r\n"
+				+ "| D : BIGINT |\r\n"
+				+ "+------------+\r\n"
+				+ "|         20 |\r\n"
+				+ "+------------+";
+		
+		e = rc.execute("GROUP SUM(B*C)->D ([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(1,1,6),(2,2,4)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+------------+\r\n"
+				+ "| A : INTEGER | D : BIGINT |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           1 |         12 |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           2 |          8 |\r\n"
+				+ "+-------------+------------+";
+		
+		e = rc.execute("GROUP A, SUM(B*C)->D ([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(1,1,6),(2,2,4),(2,NULL,1)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+------------+\r\n"
+				+ "| A : INTEGER | D : BIGINT |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           1 |          2 |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           2 |          1 |\r\n"
+				+ "+-------------+------------+";
+		
+		e = rc.execute("GROUP A, COUNT(B*C)->D ([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(1,1,6),(2,2,4)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+------------+\r\n"
+				+ "| A : INTEGER | D : BIGINT |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           1 |          2 |\r\n"
+				+ "+-------------+------------+\r\n"
+				+ "|           2 |          1 |\r\n"
+				+ "+-------------+------------+";
+		
+		e = rc.execute("GROUP A, COUNT(B*C)->D ([A : INTEGER, B : INTEGER, C: INTEGER]{(1,2,3),(1,1,6),(2,2,4),(2,NULL,1)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+------------+\r\n"
+				+ "| C : BIGINT |\r\n"
+				+ "+------------+\r\n"
+				+ "|         25 |\r\n"
+				+ "+------------+";
+		
+		e = rc.execute("GROUP COUNT(STUDENT_ID) -> C (STUDENTS PRODUCT COURSES)");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+------------+\r\n"
+				+ "| C : BIGINT |\r\n"
+				+ "+------------+\r\n"
+				+ "|          5 |\r\n"
+				+ "+------------+";
+		
+		e = rc.execute("GROUP COUNT(STUDENT_ID) -> C (DISTINCT(PROJECT {STUDENT_ID}(STUDENTS PRODUCT COURSES)))");		
+		assertEquals(expected, e.get().toString());
 	}
 	
 }

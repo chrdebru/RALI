@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import antlr4.ERALIBaseVisitor;
+import antlr4.ERALIParser.AggregationContext;
 import antlr4.ERALIParser.AliasContext;
 import antlr4.ERALIParser.AndContext;
 import antlr4.ERALIParser.AssignmentContext;
@@ -95,6 +96,24 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	@Override
 	public String visitProjectionExpression(ProjectionExpressionContext ctx) {
 		return ctx.getText();
+	}
+	
+	@Override
+	public String visitAggregation(AggregationContext ctx) {
+		String aggregate = ctx.aggregationOperation().getText();
+		String asAttribute = ctx.attributename.getText();
+		String exp = visit(ctx.expression());
+		
+		if(ctx.by != null) {
+			String byAttribute = ctx.by.getText();
+			return String.format(
+					"(SELECT %s, %s AS %s FROM %s GROUP BY %s)", 
+					byAttribute, aggregate, asAttribute, exp, byAttribute);
+		} else {
+			return String.format(
+					"(SELECT %s AS %s FROM %s)", 
+					aggregate, asAttribute, exp);
+		}
 	}
 
 	@Override

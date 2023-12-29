@@ -128,6 +128,18 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitJoins(ERALIParser.JoinsContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Gamma}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterGamma(ERALIParser.GammaContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Gamma}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitGamma(ERALIParser.GammaContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Relation}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -337,6 +349,26 @@ public interface ERALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProjection(ERALIParser.ProjectionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ERALIParser#aggregation}.
+	 * @param ctx the parse tree
+	 */
+	void enterAggregation(ERALIParser.AggregationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ERALIParser#aggregation}.
+	 * @param ctx the parse tree
+	 */
+	void exitAggregation(ERALIParser.AggregationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ERALIParser#aggregationOperation}.
+	 * @param ctx the parse tree
+	 */
+	void enterAggregationOperation(ERALIParser.AggregationOperationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ERALIParser#aggregationOperation}.
+	 * @param ctx the parse tree
+	 */
+	void exitAggregationOperation(ERALIParser.AggregationOperationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ERALIParser#projectionAttribute}.
 	 * @param ctx the parse tree

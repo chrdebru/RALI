@@ -81,6 +81,13 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJoins(ERALIParser.JoinsContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Gamma}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGamma(ERALIParser.GammaContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Relation}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -204,6 +211,18 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitProjection(ERALIParser.ProjectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ERALIParser#aggregation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAggregation(ERALIParser.AggregationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ERALIParser#aggregationOperation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAggregationOperation(ERALIParser.AggregationOperationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ERALIParser#projectionAttribute}.
 	 * @param ctx the parse tree
