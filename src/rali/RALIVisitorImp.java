@@ -245,7 +245,7 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		ConditionContext cond = ctx.condition();
 		
 		if(cond != null && !"JOIN".equals(op))
-			return String.format("[[ERROR: op %s cannot have a condition.]]", cond);
+			return String.format("[[ERROR: op %s cannot have a condition.]]", cond.getText());
 		
 		if("PRODUCT".equals(op))
 			return visitCartesianProduct(ctx);
