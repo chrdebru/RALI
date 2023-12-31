@@ -39,26 +39,26 @@ import antlr4.ERALIParser.SortContext;
 import antlr4.ERALIParser.TupleContext;
 
 public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
-	
+
 	private Connection connection;
 	private static int count = 0;
-	
+
 	private static List<String> attributes;
 	private static List<String> attributetypes;
-	
+
 	private static Map<String, String> types = new HashMap<String, String>();
-	
+
 	private static String INTEGER = "INTEGER";
 	private static String DECIMAL = "DECIMAL";
 	private static String STRING = "STRING";
 	private static String DATE = "DATE";
-	
+
 	private static String error = null;
 	private static String sql = null;
 
 	public ERALIVisitorImp(Connection connection) {
 		this.connection = connection;
-		
+
 		types.put(INTEGER, "INTEGER");
 		types.put(DECIMAL, "DOUBLE PRECISION");
 		types.put(STRING, "VARCHAR(255)");
@@ -70,21 +70,21 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		String relation = ctx.getText();
 		return String.format("(SELECT * FROM %s)", relation);
 	}
-	
+
 	@Override
 	public String visitProjection(ProjectionContext ctx) {
 		List<String> attlist = ctx.attributes.stream().map(x -> visitProjectionAttribute(x)).toList();
 		String atts = String.join(", ", attlist);
-		
+
 		if(attlist.size() != ctx.attributes.stream().map(x -> x.attributename.getText()).distinct().toList().size()) {
 			return String.format("[[ERROR: Duplicate attribute names in selection: %s.]]", atts);
 		}
-		
+
 		String exp = visit(ctx.expression());
-				
+
 		return String.format("(SELECT %s FROM %s)", atts, exp);
 	}
-	
+
 	@Override
 	public String visitProjectionAttribute(ProjectionAttributeContext ctx) {
 		if(ctx.exp == null)
@@ -97,13 +97,13 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitProjectionExpression(ProjectionExpressionContext ctx) {
 		return ctx.getText();
 	}
-	
+
 	@Override
 	public String visitAggregation(AggregationContext ctx) {
 		String aggregate = ctx.aggregationOperation().getText();
 		String asAttribute = ctx.attributename.getText();
 		String exp = visit(ctx.expression());
-		
+
 		if(ctx.by != null) {
 			String byAttribute = ctx.by.getText();
 			return String.format(
@@ -128,7 +128,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitSelection(SelectionContext ctx) {
 		String cond = visit(ctx.condition());
 		String exp = visit(ctx.expression());
-		
+
 		return String.format("(SELECT * FROM %s WHERE %s)", exp, cond);
 	}
 
@@ -168,18 +168,18 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		attributetypes = new ArrayList<String>();
 		error = null;
 		sql = "";
-		
+
 		try {
 			super.visitInlinerelation(ctx);
-			
+
 			String create = "CREATE TABLE TABLE" + count + "(" 
 					+ String.join(", ", attributes) + ");";
 
 			connection.createStatement().execute(create + sql);
-			
+
 			if (error == null)
 				return String.format("(SELECT * FROM TABLE%s)", count);
-			
+
 			return error;
 		} catch (SQLException e) {
 			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
@@ -199,18 +199,18 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitTuple(TupleContext ctx) {
 		int size = attributes.size();
 		List<String> values = ctx.values.stream().map(v -> v.getText()).toList();
-		
+
 		if(ctx.values.size() != size) {
 			error = String.format("[[ERROR: Tuple does not have the correct size of %d: %s.]]", size, values);
 			// We do not have to return, but why bother with the rest?
 			return "";
 		}
-		
+
 		String insert = "INSERT INTO TABLE" + count + " VALUES (";
 		for(int i = 0; i < size; i++) {
 			if(i != 0) insert += ", ";
 			String type = attributetypes.get(i);
-			
+
 			if(values.get(i).equals("NULL"))
 				insert += values.get(i);
 			else if(type.equals(types.get(DATE)))
@@ -221,9 +221,9 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 				insert += values.get(i);
 		}
 		insert += ");";
-		
+
 		sql += insert;
-		
+
 		return super.visitTuple(ctx);
 	}
 
@@ -232,20 +232,20 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		String e = visit(ctx.expression());
 		return String.format("(%s)", e);
 	}
-	
+
 	@Override
 	public String visitAssignment(AssignmentContext ctx) {
 		String query = visit(ctx.expression());
 
 		if(ctx.label == null)
 			return query;
-		
+
 		try {
 			String viewname = ctx.label.getText();
 			String sql = String.format("CREATE VIEW %s AS %s", viewname, query);
 			connection.createStatement().execute(sql);
 			return String.format("(SELECT * FROM %s)", viewname);
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: Problem creating constant relation: %s.]]", e.getMessage().replace("\n", "").replace("\r", ""));
 		}
@@ -255,36 +255,36 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitRename(RenameContext ctx) {
 		String exp = visit(ctx.expression());
 		List<String> aliases = ctx.aliases.stream().map(x -> visitAlias(x)).toList();
-		
+
 		// LHS of each alias
 		List<String> LHS = aliases.stream().map(x -> x.substring(0, x.indexOf(" "))).toList();
-		
+
 		try {
 			// Get the attributes of the query and store them in a list
 			ResultSet rs = connection.createStatement().executeQuery(exp);
 			ArrayList<String> att = new ArrayList<String>();
 			for(int a = 1; a <= rs.getMetaData().getColumnCount(); a++)
 				att.add(rs.getMetaData().getColumnLabel(a));
-			
+
 			ArrayList<String> finallist = new ArrayList<String>(aliases);
 			for(String a : att) {
 				if(!LHS.contains(a))
 					finallist.add(a);
 			}
-						
+
 			String attributes = finallist.stream().collect(Collectors.joining(", "));
 			return String.format("(SELECT %s FROM %s)", attributes, exp);
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}	
 	}
-	
+
 	@Override
 	public String visitAlias(AliasContext ctx) {
 		return ctx.getText().replace("<-", " AS ");
 	}
-	
+
 	@Override
 	public String visitDistinct(DistinctContext ctx) {
 		String exp = visit(ctx.expression());
@@ -299,10 +299,10 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitJoins(JoinsContext ctx) {
 		String op = ctx.operator.getText();
 		ConditionContext cond = ctx.condition();
-		
-		if(cond != null && !"JOIN".equals(op))
-			return String.format("[[ERROR: op %s cannot have a condition.]]", cond);
-		
+
+		if(cond != null && !op.contains("JOIN"))
+			return String.format("[[ERROR: op %s cannot have a condition.]]", op);
+
 		if("PRODUCT".equals(op))
 			return visitCartesianProduct(ctx);
 		else if(op.contains("DIVISION"))
@@ -310,115 +310,188 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 				return visitSetDivision(ctx);
 			else
 				return visitDivision(ctx);
-				//return "[[ERROR: division on multisets not supported.]]";
+		//return "[[ERROR: division on multisets not supported.]]";
 		else if(cond != null)
 			return visitThetaJoin(ctx);
 		else
 			return visitNaturalJoin(ctx);
 	}	
-	
+
 	public String visitCartesianProduct(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);;
-		
+
 		try {
 			// Get the attributes of the LHS and store them in a list
 			ResultSet rsleft = connection.createStatement().executeQuery(left);
 			ArrayList<String> attleft = new ArrayList<String>();
 			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
 				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
+
 			// Get the attributes of the RHS and store them in a list
 			ResultSet rsright = connection.createStatement().executeQuery(right);
 			ArrayList<String> attright = new ArrayList<String>();
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
+
 			attleft.retainAll(attright);
-			
+
 			if(attleft.size() > 0)
 				return String.format("[[ERROR: LHS and RHS of the Cartisian Product share attributes: %s.]]", attleft);
-			
+
 			return String.format("(SELECT * FROM %s CROSS JOIN %s)", left, right);
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
 	}
-	
+
 	public String visitNaturalJoin(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		return String.format("(SELECT DISTINCT * FROM %s NATURAL JOIN %s)", left, right);
+
+		if(ctx.joinsOperator().outer != null) {
+			//			if(ctx.joinsOperator().dir == null) {
+			//				return String.format("(SELECT * FROM %s NATURAL OUTER JOIN %s)", left, right);
+			//			} else if ("LEFT".equals(ctx.joinsOperator().dir.getText())) {
+			//				return String.format("(SELECT * FROM %s LEFT JOIN %s)", left, right);
+			//			} else {
+			//				return String.format("(SELECT * FROM %s RIGHT JOIN %s)", left, right);
+			//			}
+
+			try {
+				// Get the attributes of the LHS and store them in a list
+				ResultSet rsleft = connection.createStatement().executeQuery(left);
+				ArrayList<String> attleft = new ArrayList<String>();
+				for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
+					attleft.add(rsleft.getMetaData().getColumnLabel(a));
+
+				// Get the attributes of the RHS and store them in a list
+				ResultSet rsright = connection.createStatement().executeQuery(right);
+				ArrayList<String> attright = new ArrayList<String>();
+				for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
+					attright.add(rsright.getMetaData().getColumnLabel(a));
+
+				ArrayList<String> attleftcopy = new ArrayList<String>(attleft);
+
+				attleft.retainAll(attright);
+				if(attleft.size() == 0)
+					return String.format("[[ERROR: LHS and RHS of the Natural Join do not share attributes: %s.]]", attleft);
+
+				// Prepare the join condition to simulate a natural join
+				String joinatts = String.join(" AND ", attleft.stream().map(x -> String.format("X.%s = Y.%s", x, x)).toList());
+
+				if (ctx.joinsOperator().dir == null) {
+					ArrayList<String> attrightcopy = new ArrayList<String>(attright);
+
+					// Prepare the colums to select
+					// We need all columns of LHS for the LEFT OUTER JOIN
+					String xAtts1 = String.join(", ", attleftcopy.stream().map(x -> String.format("X.%s", x)).toList());
+					attrightcopy.removeAll(attleftcopy);
+					String yAtts1 = String.join(", ", attrightcopy.stream().map(x -> String.format("Y.%s", x)).toList());
+
+					// We need all columns of RHS for the RIGHT OUTER JOIN 
+					String xAtts2 = String.join(", ", attleft.stream().map(x -> String.format("X.%s", x)).toList());
+					String yAtts2 = String.join(", ", attright.stream().map(x -> String.format("Y.%s", x)).toList());
+
+					String where = String.join(" AND ", attleft.stream().map(x -> String.format("X.%s IS NULL", x, x)).toList());
+
+					// query based on https://stackoverflow.com/questions/30092068/sql-full-outer-join-not-working
+					return String.format("("
+							+ "((SELECT %s, %s FROM %s X LEFT OUTER JOIN %s Y ON %s))"
+							+ "UNION ALL"
+							+ "((SELECT %s, %s FROM %s X RIGHT OUTER JOIN %s Y ON %s WHERE %s))"
+							+ ")", 
+							xAtts1, yAtts1, left, right, joinatts,
+							xAtts2, yAtts2, left, right, joinatts, where);
+				} else if ("LEFT".equals(ctx.joinsOperator().dir.getText())) {
+					// Prepare the colums to select
+					String xAtts = String.join(", ", attleftcopy.stream().map(x -> String.format("X.%s", x)).toList());
+					attright.removeAll(attleftcopy);
+					String yAtts = String.join(", ", attright.stream().map(x -> String.format("Y.%s", x)).toList());
+					return String.format("(SELECT %s, %s FROM %s X LEFT OUTER JOIN %s Y ON %s)", xAtts, yAtts, left, right, joinatts);
+				} else {
+					// Prepare the colums to select
+					String xAtts = String.join(", ", attleft.stream().map(x -> String.format("X.%s", x)).toList());
+					String yAtts = String.join(", ", attright.stream().map(x -> String.format("Y.%s", x)).toList());
+					return String.format("(SELECT %s, %s FROM %s X RIGHT OUTER JOIN %s Y ON %s)", xAtts, yAtts, left, right, joinatts);
+				}
+
+			} catch (SQLException e) {
+				return String.format("[[ERROR: %s.]]", e.getMessage());
+			}
+		}
+
+		return String.format("(SELECT * FROM %s NATURAL JOIN %s)", left, right);
 	}
-	
+
 	public String visitThetaJoin(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
 		String cond = visit(ctx.cond);
-		
+
 		try {
 			// Get the attributes of the LHS and store them in a list
 			ResultSet rsleft = connection.createStatement().executeQuery(left);
 			ArrayList<String> attleft = new ArrayList<String>();
 			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
 				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
+
 			// Get the attributes of the RHS and store them in a list
 			ResultSet rsright = connection.createStatement().executeQuery(right);
 			ArrayList<String> attright = new ArrayList<String>();
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
+
 			attleft.retainAll(attright);
-			
+
 			if(attleft.size() > 0)
 				return String.format("[[ERROR: LHS and RHS of the Theta Join share attributes: %s.]]", attleft);
-			
-			return String.format("(SELECT DISTINCT * FROM %s JOIN %s ON %s)", left, right, cond);
-			
+
+			return String.format("(SELECT * FROM %s JOIN %s ON %s)", left, right, cond);
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}	
 	}
-	
+
 	public String visitSetDivision(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		
+
 		try {
 			// Get the attributes of the LHS and store them in a list
 			ResultSet rsleft = connection.createStatement().executeQuery(left);
 			ArrayList<String> attleft = new ArrayList<String>();
 			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
 				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
+
 			// Get the attributes of the RHS and store them in a list
 			ResultSet rsright = connection.createStatement().executeQuery(right);
 			ArrayList<String> attright = new ArrayList<String>();
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
+
 			if(!attleft.containsAll(attright))
 				return "[[ERROR: Schema of LHS does not contain all attributes of RHS.]]";
-			
+
 			if(attleft.size() == attright.size())
 				return "[[ERROR: LHS and RHS cannot have the same schema for a division.]]";
-			
+
 			// We now remove RHS's attributes from the LHS for the query
 			attleft.removeAll(attright);
-			
+
 			int v1 = count++;
 			int v2 = count++;
 			int v3 = count++;
-			
+
 			String query = ""
 					+ "SELECT DISTINCT %s FROM %s AS R%d WHERE NOT EXISTS ("
 					+ "(SELECT %s FROM %s AS R%d)"
 					+ "EXCEPT"
 					+ "(SELECT %s FROM %s AS R%d WHERE %s)"		
 					+ ")";
-			
+
 			String filled = String.format(query, 
 					attleft.stream().collect(Collectors.joining(", ")), 
 					left,
@@ -431,61 +504,61 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					v3,
 					attleft.stream().map(x -> String.format("R%d.%s = R%d.%s", v3, x, v1, x)).collect(Collectors.joining(" AND "))
 					);
-			
+
 			return filled;
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
 	}
-	
+
 	public String visitDivision(JoinsContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		
+
 		try {
 			// Get the attributes of the LHS and store them in a list
 			ResultSet rsleft = connection.createStatement().executeQuery(left);
 			ArrayList<String> attleft = new ArrayList<String>();
 			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
 				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
+
 			// Get the attributes of the RHS and store them in a list
 			ResultSet rsright = connection.createStatement().executeQuery(right);
 			ArrayList<String> attright = new ArrayList<String>();
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
+
 			if(!attleft.containsAll(attright))
 				return "[[ERROR: Schema of LHS does not contain all attributes of RHS.]]";
-			
+
 			if(attleft.size() == attright.size())
 				return "[[ERROR: LHS and RHS cannot have the same schema for a division.]]";
-			
+
 			// We now remove RHS's attributes from the LHS for the query
 			attleft.removeAll(attright);
-			
+
 			String attleftstring = attleft.stream().collect(Collectors.joining(", "));
 			String attrightstring = attright.stream().collect(Collectors.joining(", "));
-			
+
 			// Get all the tuples from LEFT
 			String lquery = String.format("SELECT * FROM %s ORDER BY %s", left, attleftstring);
 			List<Map<String, Object>> L = queryToDictionary(lquery);
-			
+
 			// Get DISTINCT S1-S2 from LEFT
 			String laquery = String.format("SELECT DISTINCT %s FROM %s ORDER BY %s", attleftstring, left, attleftstring);
 			List<Map<String, Object>> LA = queryToDictionary(laquery);
-			
+
 			// Get all the tuples from RIGHT
 			String rquery = String.format("SELECT * FROM %s ORDER BY %s", right, attrightstring);
 			List<Map<String, Object>> R = queryToDictionary(rquery);
-			
+
 			List<Map<String, Object>> toKeep = new ArrayList<Map<String, Object>>();
-			
+
 			while(!LA.isEmpty()) {				
 				// Get an LA from the list
 				Map<String, Object> la = LA.get(0);
-				
+
 				// Test if la has all occurrences of R in L
 				// If yes, *keep* la and remove these occurrences
 				if(hasAllCombinationsIn(la, R, L)) {
@@ -497,7 +570,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					LA.remove(la);
 				}
 			}
-			
+
 			// Create a new table based on division.
 			List<String> attributes = new ArrayList<String>();
 			ResultSet res = connection.createStatement().executeQuery(laquery);
@@ -512,19 +585,19 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					clazz = types.get(DECIMAL);
 				else
 					clazz = types.get(DATE);
-				
+
 				attributes.add(res.getMetaData().getColumnName(i) + " " + clazz);
 			}
-			
+
 			String create = String.format("CREATE TABLE TABLE%s (%s);", ++count, String.join(", ", attributes));
 			connection.createStatement().execute(create);
-			
+
 			for(Map<String, Object> t : toKeep) {
 				String atts = "";
 				String vals = "";
-				
+
 				boolean first = true;
-				
+
 				for(String k : t.keySet()) {
 					if(first)
 						first = false;
@@ -532,9 +605,9 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 						atts += ", ";
 						vals += ", ";
 					}
-					
+
 					atts += k;
-					
+
 					Object o = t.get(k);
 					if (o == null) 
 						vals += "NULL";
@@ -545,23 +618,23 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					else
 						vals += o;
 				}
-				
+
 				String insert = String.format("INSERT INTO TABLE%s (%s) VALUES (%s)", count, atts, vals);
 				connection.createStatement().execute(insert);
 			}
-			
+
 			return String.format("(SELECT * FROM TABLE%s)", count);
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
 	}
-	
+
 	private void removeAllCombinationsIn(
 			Map<String, Object> la, 
 			List<Map<String, Object>> R,
 			List<Map<String, Object>> L) {
-		
+
 		for(Map<String, Object> m : R) {
 			Map<String, Object> newtuple = new HashMap<String,Object>();
 			newtuple.putAll(la);
@@ -574,19 +647,19 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			Map<String, Object> la, 
 			List<Map<String, Object>> R,
 			List<Map<String, Object>> L) {
-		
+
 		List<Map<String, Object>> Lcopy = new ArrayList<Map<String, Object>>(L);
-		
+
 		for(Map<String, Object> m : R) {
 			Map<String, Object> newtuple = new HashMap<String,Object>();
 			newtuple.putAll(la);
 			newtuple.putAll(m);
-			
+
 			if(Lcopy.contains(newtuple))
 				Lcopy.remove(newtuple);
 			else return false;
 		}
-		
+
 		return true;
 	}
 
@@ -595,15 +668,15 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
 		int n = R.getMetaData().getColumnCount();
 		while (R.next()) {
-		    Map<String, Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<String, Object>();
 			for (int i = 1; i <= n; i++) {
 				map.put(R.getMetaData().getColumnName(i), R.getObject(i));
-		    }
+			}
 			maps.add(map);
 		}
 		return maps;
 	}
-	
+
 	//*************************************************************************
 	// INTERSECTION
 	//*************************************************************************	
@@ -612,31 +685,31 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitIntersection(IntersectionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		
+
 		try {
 			// Get the attributes of the LHS and store them in a list
 			ResultSet rsleft = connection.createStatement().executeQuery(left);
 			ArrayList<String> attleft = new ArrayList<String>();
 			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
 				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
+
 			// Get the attributes of the RHS and store them in a list
 			ResultSet rsright = connection.createStatement().executeQuery(right);
 			ArrayList<String> attright = new ArrayList<String>();
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
+
 			if(!(attleft.containsAll(attright) && attright.containsAll(attleft)))
 				return String.format("[[ERROR: LHS and RHS of the Intersection have different attributes: %s.]]", attleft);
-			
+
 			String rownumberatt = "ROWNUMBER" + ++count;
-			
+
 			String sql = "(SELECT %s FROM ("
 					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ " INTERSECT "
 					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ "))";
-			
+
 			String filled = String.format(sql, 
 					attleft.stream().collect(Collectors.joining(", ")),
 					attleft.stream().collect(Collectors.joining(", ")),
@@ -648,34 +721,34 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					attright.stream().collect(Collectors.joining(", ")),
 					right
 					);
-						
+
 			return filled;
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public String visitSetIntersection(SetIntersectionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
 		return String.format("(SELECT * FROM %s INTERSECT %s)", left, right);
 	}
-	
+
 	//*************************************************************************
 	// Difference and Union
 	//*************************************************************************
 	@Override
 	public String visitDifferenceOrUnion(DifferenceOrUnionContext ctx) {
 		String op = ctx.operator.getText();
-		
+
 		if("MINUS".equals(op))
 			return visitDifference(ctx);
 		else
 			return visitUnion(ctx);
 	}	
-	
+
 	public String visitUnion(DifferenceOrUnionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
@@ -685,31 +758,31 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitDifference(DifferenceOrUnionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);
-		
+
 		try {
 			// Get the attributes of the LHS and store them in a list
 			ResultSet rsleft = connection.createStatement().executeQuery(left);
 			ArrayList<String> attleft = new ArrayList<String>();
 			for(int a = 1; a <= rsleft.getMetaData().getColumnCount(); a++)
 				attleft.add(rsleft.getMetaData().getColumnLabel(a));
-						
+
 			// Get the attributes of the RHS and store them in a list
 			ResultSet rsright = connection.createStatement().executeQuery(right);
 			ArrayList<String> attright = new ArrayList<String>();
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
-			
+
 			if(!(attleft.containsAll(attright) && attright.containsAll(attleft)))
 				return String.format("[[ERROR: LHS and RHS of the difference have different attributes: %s.]]", attleft);
-			
+
 			String rownumberatt = "ROWNUMBER" + ++count;
-			
+
 			String sql = "(SELECT %s FROM ("
 					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ " EXCEPT "
 					+ "SELECT ROW_NUMBER() OVER (PARTITION BY %s) AS %s, %s FROM %s"
 					+ "))";
-			
+
 			String filled = String.format(sql, 
 					attleft.stream().collect(Collectors.joining(", ")),
 					attleft.stream().collect(Collectors.joining(", ")),
@@ -721,24 +794,24 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 					attright.stream().collect(Collectors.joining(", ")),
 					right
 					);
-			
+
 			return filled;
-			
+
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
 		}
 	}
-	
+
 	@Override
 	public String visitSetDifferenceOrUnion(SetDifferenceOrUnionContext ctx) {
 		String op = ctx.operator.getText();
-		
+
 		if("MINUS".equals(op))
 			return visitSetDifference(ctx);
 		else
 			return visitSetUnion(ctx);
 	}	
-	
+
 	public String visitSetUnion(SetDifferenceOrUnionContext ctx) {
 		String left = visit(ctx.left);
 		String right = visit(ctx.right);

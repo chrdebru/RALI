@@ -50,8 +50,10 @@ distinct :
 	'DISTINCT' '(' expression ')'
 ;
 
-joinsOperator:
-	'PRODUCT' | 'JOIN' | (set='SET')? 'DIVISION'
+joinsOperator
+	: 'PRODUCT' 
+	| (dir=('LEFT' | 'RIGHT')? outer='OUTER')? 'JOIN' 
+	| (set='SET')? 'DIVISION'
 ;
 
 diffUnionOperator:

@@ -615,4 +615,111 @@ public class ERALITest {
 		assertEquals(expected, e.get().toString());
 	}
 	
+	@Test
+	public void testJoin1() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+----------------------+---------------------+\r\n"
+				+ "| STUDENT_ID : INTEGER | COURSE_ID : INTEGER |\r\n"
+				+ "+----------------------+---------------------+\r\n"
+				+ "|                    1 |                 101 |\r\n"
+				+ "+----------------------+---------------------+\r\n"
+				+ "|                    1 |                 103 |\r\n"
+				+ "+----------------------+---------------------+\r\n"
+				+ "|                    5 |                 101 |\r\n"
+				+ "+----------------------+---------------------+\r\n"
+				+ "|                    5 |                 103 |\r\n"
+				+ "+----------------------+---------------------+";
+		
+		e = rc.execute("ENROLLMENTS JOIN (ENROLLMENTS DIVISION DIVTEST)");		
+		assertEquals(expected, e.get().toString());
+
+		// Join behaves as a cartesian product when no attributes are shared
+		
+		expected = "+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           4 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           4 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           2 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           2 |           4 |\r\n"
+				+ "+-------------+-------------+";
+		e = rc.execute("[A : INTEGER]{(1),(1),(2)} JOIN [B : INTEGER]{(3),(4)}");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           3 |           8 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           2 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           5 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} LEFT OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)}");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| B : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           3 |           3 |           8 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|        NULL |           4 |           9 |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} RIGHT OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)}");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           3 |           8 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           2 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           5 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|        NULL |           4 |           9 |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)}");		
+		System.err.println(e.get());
+		assertEquals(expected, e.get().toString());
+	}
+	
+	@Test
+	public void testThetaJoin() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           3 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           4 |\r\n"
+				+ "+-------------+-------------+\r\n"
+				+ "|           1 |           4 |\r\n"
+				+ "+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER]{(1),(1),(5)} JOIN A < B [B : INTEGER]{(3),(4)}");		
+		assertEquals(expected, e.get().toString());
+		
+		e = rc.execute("STUDENTS JOIN NAME = AGE STUDENTS");
+		assertTrue(e instanceof Left);
+	}
+	
+
+	
 }
