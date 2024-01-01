@@ -19,7 +19,7 @@ public class ERALI {
 				+ "  \\       / |  |  \\    / \\ (_ o _) /  |        \\|   |  \r\n"
 				+ "   `'-..-'  ''-'   `'-'   '.(_,_).'   `--------`'---'  ");
 
-		System.out.println("Welcome to RALI, the Relational Algebra Learning Instrument!");
+		System.out.println("Welcome to RALI, the Extended Relational Algebra Learning Instrument!");
 		System.out.println();
 		System.out.println("Type :quit to exit.");
 		System.out.println("Type :examples to load the default relations STUDENTS, ENROLLMENTS, and COURSES.");
