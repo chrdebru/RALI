@@ -156,7 +156,10 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitAtomicformula(AtomicformulaContext ctx) {	
 		// We use "" for strings, but SQL requires ''
 		// This is a quick, dirty, but probably good enough hack
-		return ctx.getText().replace("\"", "'");
+		String x = ctx.getText().replace("\"", "'");
+		x = x.replace("=NULL" , " IS NULL");
+		x = x.replace("<>NULL" , " IS NOT NULL");
+		return x;
 	}
 
 	@Override

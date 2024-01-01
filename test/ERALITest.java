@@ -692,7 +692,45 @@ public class ERALITest {
 				+ "+-------------+-------------+-------------+";
 		
 		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)}");		
-		System.err.println(e.get());
+		assertEquals(expected, e.get().toString());
+	}
+	
+	@Test
+	public void testSelectionNestedConditions() throws SQLException {
+		String expected = null;
+		Either e = null;
+
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           2 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           5 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("SELECT C = NULL([A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           2 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           5 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("SELECT NOT(C <> NULL)([A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)})");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           3 |           8 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|        NULL |           4 |           9 |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("SELECT C <> NULL([A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} OUTER JOIN [B : INTEGER, C : INTEGER]{(3,8),(4,9)})");		
 		assertEquals(expected, e.get().toString());
 	}
 	
