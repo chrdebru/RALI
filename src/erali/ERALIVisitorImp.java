@@ -337,7 +337,7 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			attleft.retainAll(attright);
 
 			if(attleft.size() > 0)
-				return String.format("[[ERROR: LHS and RHS of the Cartisian Product share attributes: %s.]]", attleft);
+				return String.format("[[ERROR: LHS and RHS of the Cartesian Product share attributes: %s.]]", attleft);
 
 			return String.format("(SELECT * FROM %s CROSS JOIN %s)", left, right);
 
