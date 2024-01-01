@@ -756,6 +756,45 @@ public class ERALITest {
 		
 		e = rc.execute("STUDENTS JOIN NAME = AGE STUDENTS");
 		assertTrue(e instanceof Left);
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           3 |           3 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           2 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           5 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} LEFT OUTER JOIN B=C [C : INTEGER]{(3),(4)}");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           3 |           3 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|        NULL |        NULL |           4 |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} RIGHT OUTER JOIN B=C [C : INTEGER]{(3),(4)}");		
+		assertEquals(expected, e.get().toString());
+		
+		expected = "+-------------+-------------+-------------+\r\n"
+				+ "| A : INTEGER | B : INTEGER | C : INTEGER |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           3 |           3 |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           1 |           2 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|           5 |           5 |        NULL |\r\n"
+				+ "+-------------+-------------+-------------+\r\n"
+				+ "|        NULL |        NULL |           4 |\r\n"
+				+ "+-------------+-------------+-------------+";
+		
+		e = rc.execute("[A : INTEGER, B : INTEGER]{(1,3),(1,2),(5,5)} OUTER JOIN B=C [C : INTEGER]{(3),(4)}");		
+		assertEquals(expected, e.get().toString());
 	}
 	
 

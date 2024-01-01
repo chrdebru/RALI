@@ -354,14 +354,6 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 		String right = visit(ctx.right);
 
 		if(ctx.joinsOperator().outer != null) {
-			//			if(ctx.joinsOperator().dir == null) {
-			//				return String.format("(SELECT * FROM %s NATURAL OUTER JOIN %s)", left, right);
-			//			} else if ("LEFT".equals(ctx.joinsOperator().dir.getText())) {
-			//				return String.format("(SELECT * FROM %s LEFT JOIN %s)", left, right);
-			//			} else {
-			//				return String.format("(SELECT * FROM %s RIGHT JOIN %s)", left, right);
-			//			}
-
 			try {
 				// Get the attributes of the LHS and store them in a list
 				ResultSet rsleft = connection.createStatement().executeQuery(left);
@@ -446,12 +438,33 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 			for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 				attright.add(rsright.getMetaData().getColumnLabel(a));
 
-			attleft.retainAll(attright);
+			ArrayList<String> attleftcopy = new ArrayList<String>(attleft);
+			attleftcopy.retainAll(attright);
 
-			if(attleft.size() > 0)
+			if(attleftcopy.size() > 0)
 				return String.format("[[ERROR: LHS and RHS of the Theta Join share attributes: %s.]]", attleft);
 
-			return String.format("(SELECT * FROM %s JOIN %s ON %s)", left, right, cond);
+			if(ctx.joinsOperator().outer != null) {
+				if (ctx.joinsOperator().dir == null) {
+					String where = String.join(" AND ", attleft.stream().map(x -> String.format("%s IS NULL", x, x)).toList());
+
+					// query based on https://stackoverflow.com/questions/30092068/sql-full-outer-join-not-working
+					return String.format("("
+							+ "((SELECT * FROM %s LEFT OUTER JOIN %s ON %s))"
+							+ "UNION ALL"
+							+ "((SELECT * FROM %s RIGHT OUTER JOIN %s ON %s WHERE %s))"
+							+ ")", 
+							left, right, cond,
+							left, right, cond, where);				
+				} 
+				else if ("LEFT".equals(ctx.joinsOperator().dir.getText())) {
+					return String.format("(SELECT * FROM %s LEFT OUTER JOIN %s ON %s)", left, right, cond);
+				} else {
+					return String.format("(SELECT * FROM %s RIGHT OUTER JOIN %s ON %s)", left, right, cond);
+				}
+			} else {				
+				return String.format("(SELECT * FROM %s JOIN %s ON %s)", left, right, cond);
+			}
 
 		} catch (SQLException e) {
 			return String.format("[[ERROR: %s.]]", e.getMessage());
