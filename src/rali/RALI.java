@@ -5,7 +5,7 @@ import java.util.Scanner;
 import rali.util.Either;
 import rali.util.Right;
 
-public class Main {
+public class RALI {
 
 	public static void main(String[] args) {
 
