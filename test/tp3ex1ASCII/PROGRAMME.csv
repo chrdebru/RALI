@@ -1,0 +1,20 @@
+NOM_COLL,NO_PART : INTEGER,TITRE
+ColloqueA,1,ExposeA
+ColloqueA,1,ExposeB
+ColloqueA,2,ExposeC
+ColloqueA,3,ExposeD
+
+ColloqueB,7,ExposeE
+ColloqueB,10,ExposeF
+ColloqueB,9,ExposeG
+ColloqueB,9,ExposeH
+
+ColloqueC,13,ExposeI
+ColloqueC,14,ExposeJ
+ColloqueC,15,ExposeK
+ColloqueC,1,ExposeA
+ColloqueC,1,ExposeL
+
+ColloqueD,4,ExposeM
+ColloqueD,5,ExposeN
+ColloqueD,6,ExposeO

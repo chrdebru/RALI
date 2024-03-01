@@ -1,0 +1,25 @@
+NO_PART : INTEGER,NOM_COLL
+1,ColloqueA
+2,ColloqueA
+3,ColloqueA
+4,ColloqueA
+5,ColloqueA
+6,ColloqueA
+7,ColloqueB
+8,ColloqueB
+9,ColloqueB
+10,ColloqueB
+11,ColloqueB
+12,ColloqueB
+13,ColloqueC
+14,ColloqueC
+15,ColloqueC
+1,ColloqueC
+2,ColloqueC
+3,ColloqueC
+15,ColloqueD
+4,ColloqueD
+5,ColloqueD
+6,ColloqueD
+7,ColloqueD
+8,ColloqueD
