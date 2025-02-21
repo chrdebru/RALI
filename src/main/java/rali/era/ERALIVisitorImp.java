@@ -377,48 +377,53 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 				for(int a = 1; a <= rsright.getMetaData().getColumnCount(); a++)
 					attright.add(rsright.getMetaData().getColumnLabel(a));
 
-				ArrayList<String> attleftcopy = new ArrayList<String>(attleft);
-
-				attleft.retainAll(attright);
-				if(attleft.size() == 0)
+				// Do we have shared attributes?
+				ArrayList<String> shared = new ArrayList<String>(attleft);
+				shared.retainAll(attright);
+				if (shared.isEmpty())
 					return String.format("[[ERROR: LHS and RHS of the Natural Join do not share attributes: %s.]]", attleft);
 
-				// Prepare the join condition to simulate a natural join
-				String joinatts = String.join(" AND ", attleft.stream().map(x -> String.format("X.%s = Y.%s", x, x)).toList());
+				// Yes! Prepare the join condition to simulate a natural join
+				String joinatts = String.join(" AND ", shared.stream().map(x -> String.format("X.%s = Y.%s", x, x)).toList());
+
+				// Prepare the schema the the union of the two queries
+				ArrayList<String> schema = new ArrayList<String>(attleft);
+				schema.addAll(attright);
+				schema = (ArrayList<String>) schema.stream().distinct().collect(Collectors.toList());
 
 				if (ctx.joinsOperator().dir == null) {
 					ArrayList<String> attrightcopy = new ArrayList<String>(attright);
 
-					// Prepare the colums to select
+					// Prepare the columns to select
 					// We need all columns of LHS for the LEFT OUTER JOIN
-					String xAtts1 = String.join(", ", attleftcopy.stream().map(x -> String.format("X.%s", x)).toList());
-					attrightcopy.removeAll(attleftcopy);
-					String yAtts1 = String.join(", ", attrightcopy.stream().map(x -> String.format("Y.%s", x)).toList());
+					String schema1 = String.join(", ", schema.stream().map(x -> String.format(attleft.contains(x) ? "X.%s" : "Y.%s", x)).toList());
 
-					// We need all columns of RHS for the RIGHT OUTER JOIN 
-					String xAtts2 = String.join(", ", attleft.stream().map(x -> String.format("X.%s", x)).toList());
-					String yAtts2 = String.join(", ", attright.stream().map(x -> String.format("Y.%s", x)).toList());
+					// We need all columns of RHS for the RIGHT OUTER JOIN
+					String schema2 = String.join(", ", schema.stream().map(x -> String.format(attright.contains(x) ? "Y.%s" : "X.%s", x)).toList());
 
+					// Create the where clause to remove dupe matches
+					attleft.retainAll(attright);
 					String where = String.join(" AND ", attleft.stream().map(x -> String.format("X.%s IS NULL", x, x)).toList());
 
 					// query based on https://stackoverflow.com/questions/30092068/sql-full-outer-join-not-working
 					return String.format("("
-							+ "((SELECT %s, %s FROM %s X LEFT OUTER JOIN %s Y ON %s))"
-							+ "UNION ALL"
-							+ "((SELECT %s, %s FROM %s X RIGHT OUTER JOIN %s Y ON %s WHERE %s))"
-							+ ")", 
-							xAtts1, yAtts1, left, right, joinatts,
-							xAtts2, yAtts2, left, right, joinatts, where);
+									+ "((SELECT %s FROM %s X LEFT OUTER JOIN %s Y ON %s))"
+									+ "UNION ALL"
+									+ "((SELECT %s FROM %s X RIGHT OUTER JOIN %s Y ON %s WHERE %s))"
+									+ ")",
+							schema1, left, right, joinatts,
+							schema2, left, right, joinatts, where);
 				} else if ("LEFT".equals(ctx.joinsOperator().dir.getText())) {
 					// Prepare the colums to select
-					String xAtts = String.join(", ", attleftcopy.stream().map(x -> String.format("X.%s", x)).toList());
-					attright.removeAll(attleftcopy);
+					String xAtts = String.join(", ", attleft.stream().map(x -> String.format("X.%s", x)).toList());
+					attright.removeAll(attleft);
 					String yAtts = String.join(", ", attright.stream().map(x -> String.format("Y.%s", x)).toList());
 					return String.format("(SELECT %s, %s FROM %s X LEFT OUTER JOIN %s Y ON %s)", xAtts, yAtts, left, right, joinatts);
 				} else {
 					// Prepare the colums to select
-					String xAtts = String.join(", ", attleft.stream().map(x -> String.format("X.%s", x)).toList());
 					String yAtts = String.join(", ", attright.stream().map(x -> String.format("Y.%s", x)).toList());
+					attleft.removeAll(attright);
+					String xAtts = String.join(", ", attleft.stream().map(x -> String.format("X.%s", x)).toList());
 					return String.format("(SELECT %s, %s FROM %s X RIGHT OUTER JOIN %s Y ON %s)", xAtts, yAtts, left, right, joinatts);
 				}
 
