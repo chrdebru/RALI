@@ -19,15 +19,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.2.0</version>
+            <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -57,65 +57,6 @@
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>exec-maven-plugin</artifactId>-->
-<!--                <version>1.2.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>java</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <mainClass>rali.Main</mainClass>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.3.0</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>rali</id>-->
-<!--                        <goals><goal>jar</goal></goals>-->
-<!--                        <phase>package</phase>-->
-<!--                        <configuration>-->
-<!--                            <classifier>rali</classifier>-->
-<!--                            <excludes>-->
-<!--                                <exclude>**/ERALI*</exclude>-->
-<!--                            </excludes>-->
-<!--                            <archive>-->
-<!--                                <manifest>-->
-<!--                                    <addClasspath>true</addClasspath>-->
-<!--                                    <classpathPrefix>dependency/</classpathPrefix>-->
-<!--                                    <mainClass>rali.ra.RALI</mainClass>-->
-<!--                                </manifest>-->
-<!--                            </archive>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>erali</id>-->
-<!--                        <goals><goal>jar</goal></goals>-->
-<!--                        <phase>package</phase>-->
-<!--                        <configuration>-->
-<!--                            <classifier>erali</classifier>-->
-<!--                            <includes>-->
-<!--                                <exclude>**/RALI*</exclude>-->
-<!--                            </includes>-->
-<!--                            <archive>-->
-<!--                                <manifest>-->
-<!--                                    <addClasspath>true</addClasspath>-->
-<!--                                    <classpathPrefix>dependency/</classpathPrefix>-->
-<!--                                    <mainClass>rali.ra.ERALI</mainClass>-->
-<!--                                </manifest>-->
-<!--                            </archive>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
