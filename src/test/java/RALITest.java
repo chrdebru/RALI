@@ -1,4 +1,9 @@
+/**
+ * @author Christophe Debruyne <c.debruyne@uliege.be> Université de Liège
+ */
+
 import static org.junit.Assert.assertTrue;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.SQLException;

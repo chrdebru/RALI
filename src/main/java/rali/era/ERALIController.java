@@ -1,3 +1,7 @@
+/**
+ * @author Christophe Debruyne <c.debruyne@uliege.be> Université de Liège
+ */
+
 package rali.era;
 
 import java.io.File;

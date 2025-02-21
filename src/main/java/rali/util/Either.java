@@ -1,3 +1,7 @@
+/**
+ * @author Christophe Debruyne <c.debruyne@uliege.be> Université de Liège
+ */
+
 package rali.util;
 
 public abstract class Either {
