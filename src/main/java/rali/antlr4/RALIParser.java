@@ -17,11 +17,12 @@ public class RALIParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
-		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
-		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
-		RESERVED=32, LABEL=33, INTEGER=34, DECIMAL=35, STRING=36, DATE=37, WHITESPACE=38;
+		SELECT=1, RENAME=2, PROJECT=3, INTERSECTION=4, DIVISION=5, PRODUCT=6, 
+		MINUS=7, JOIN=8, TIMES=9, UNION=10, DIFFERENCE=11, STRINGTYPE=12, INTEGERTYPE=13, 
+		DECIMALTYPE=14, DATETYPE=15, EQ=16, NEQ=17, LT=18, GT=19, LTE=20, GTE=21, 
+		LEFTARROW=22, COMMA=23, LPAREN=24, RPAREN=25, LCURLY=26, RCURLY=27, LBRACKET=28, 
+		RBRACKET=29, COLON=30, AND=31, OR=32, NOT=33, LABEL=34, INTEGER=35, DECIMAL=36, 
+		STRING=37, DATE=38, WHITESPACE=39;
 	public static final int
 		RULE_statement = 0, RULE_expression = 1, RULE_joinsOperator = 2, RULE_diffUnionOperator = 3, 
 		RULE_selection = 4, RULE_rename = 5, RULE_alias = 6, RULE_condition = 7, 
@@ -38,19 +39,22 @@ public class RALIParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'='", "'INTERSECTION'", "'('", "')'", "'PRODUCT'", "'JOIN'", "'DIVISION'", 
-			"'MINUS'", "'UNION'", "'SELECT'", "'RENAME'", "','", "'<-'", "'NOT'", 
-			"'AND'", "'OR'", "'<'", "'<='", "'>'", "'>='", "'<>'", "'PROJECT'", "'{'", 
-			"'}'", "'['", "']'", "':'", "'STRING'", "'INTEGER'", "'DECIMAL'", "'DATE'"
+			null, "'SELECT'", "'RENAME'", "'PROJECT'", "'INTERSECTION'", "'DIVISION'", 
+			"'PRODUCT'", "'MINUS'", "'JOIN'", "'TIMES'", "'UNION'", "'DIFFERENCE'", 
+			"'STRING'", "'INTEGER'", "'DECIMAL'", "'DATE'", "'='", "'<>'", "'<'", 
+			"'>'", "'<='", "'>='", "'<-'", "','", "'('", "')'", "'{'", "'}'", "'['", 
+			"']'", "':'", "'AND'", "'OR'", "'NOT'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, null, "RESERVED", "LABEL", 
-			"INTEGER", "DECIMAL", "STRING", "DATE", "WHITESPACE"
+			null, "SELECT", "RENAME", "PROJECT", "INTERSECTION", "DIVISION", "PRODUCT", 
+			"MINUS", "JOIN", "TIMES", "UNION", "DIFFERENCE", "STRINGTYPE", "INTEGERTYPE", 
+			"DECIMALTYPE", "DATETYPE", "EQ", "NEQ", "LT", "GT", "LTE", "GTE", "LEFTARROW", 
+			"COMMA", "LPAREN", "RPAREN", "LCURLY", "RCURLY", "LBRACKET", "RBRACKET", 
+			"COLON", "AND", "OR", "NOT", "LABEL", "INTEGER", "DECIMAL", "STRING", 
+			"DATE", "WHITESPACE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -119,6 +123,7 @@ public class RALIParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class AssignmentContext extends StatementContext {
 		public Token label;
+		public TerminalNode EQ() { return getToken(RALIParser.EQ, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -173,7 +178,7 @@ public class RALIParser extends Parser {
 				setState(30);
 				((AssignmentContext)_localctx).label = match(LABEL);
 				setState(31);
-				match(T__0);
+				match(EQ);
 				setState(32);
 				expression(0);
 				}
@@ -222,6 +227,7 @@ public class RALIParser extends Parser {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
+		public TerminalNode INTERSECTION() { return getToken(RALIParser.INTERSECTION, 0); }
 		public IntersectionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -277,9 +283,11 @@ public class RALIParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ParensContext extends ExpressionContext {
+		public TerminalNode LPAREN() { return getToken(RALIParser.LPAREN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode RPAREN() { return getToken(RALIParser.RPAREN, 0); }
 		public ParensContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -446,7 +454,7 @@ public class RALIParser extends Parser {
 				match(LABEL);
 				}
 				break;
-			case T__24:
+			case LBRACKET:
 				{
 				_localctx = new ConstantContext(_localctx);
 				_ctx = _localctx;
@@ -455,7 +463,7 @@ public class RALIParser extends Parser {
 				inlinerelation();
 				}
 				break;
-			case T__21:
+			case PROJECT:
 				{
 				_localctx = new PiContext(_localctx);
 				_ctx = _localctx;
@@ -464,7 +472,7 @@ public class RALIParser extends Parser {
 				projection();
 				}
 				break;
-			case T__9:
+			case SELECT:
 				{
 				_localctx = new SigmaContext(_localctx);
 				_ctx = _localctx;
@@ -473,7 +481,7 @@ public class RALIParser extends Parser {
 				selection();
 				}
 				break;
-			case T__10:
+			case RENAME:
 				{
 				_localctx = new RhoContext(_localctx);
 				_ctx = _localctx;
@@ -482,17 +490,17 @@ public class RALIParser extends Parser {
 				rename();
 				}
 				break;
-			case T__2:
+			case LPAREN:
 				{
 				_localctx = new ParensContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(42);
-				match(T__2);
+				match(LPAREN);
 				setState(43);
 				expression(0);
 				setState(44);
-				match(T__3);
+				match(RPAREN);
 				}
 				break;
 			default:
@@ -541,7 +549,7 @@ public class RALIParser extends Parser {
 						setState(55);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(56);
-						((IntersectionContext)_localctx).operator = match(T__1);
+						((IntersectionContext)_localctx).operator = match(INTERSECTION);
 						setState(57);
 						((IntersectionContext)_localctx).right = expression(4);
 						}
@@ -581,6 +589,9 @@ public class RALIParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class JoinsOperatorContext extends ParserRuleContext {
+		public TerminalNode PRODUCT() { return getToken(RALIParser.PRODUCT, 0); }
+		public TerminalNode JOIN() { return getToken(RALIParser.JOIN, 0); }
+		public TerminalNode DIVISION() { return getToken(RALIParser.DIVISION, 0); }
 		public JoinsOperatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -609,7 +620,7 @@ public class RALIParser extends Parser {
 			{
 			setState(67);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 224L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 352L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -632,6 +643,8 @@ public class RALIParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class DiffUnionOperatorContext extends ParserRuleContext {
+		public TerminalNode MINUS() { return getToken(RALIParser.MINUS, 0); }
+		public TerminalNode UNION() { return getToken(RALIParser.UNION, 0); }
 		public DiffUnionOperatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -660,7 +673,7 @@ public class RALIParser extends Parser {
 			{
 			setState(69);
 			_la = _input.LA(1);
-			if ( !(_la==T__7 || _la==T__8) ) {
+			if ( !(_la==MINUS || _la==UNION) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -683,12 +696,15 @@ public class RALIParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class SelectionContext extends ParserRuleContext {
+		public TerminalNode SELECT() { return getToken(RALIParser.SELECT, 0); }
 		public ConditionContext condition() {
 			return getRuleContext(ConditionContext.class,0);
 		}
+		public TerminalNode LPAREN() { return getToken(RALIParser.LPAREN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode RPAREN() { return getToken(RALIParser.RPAREN, 0); }
 		public SelectionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -715,15 +731,15 @@ public class RALIParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(71);
-			match(T__9);
+			match(SELECT);
 			setState(72);
 			condition(0);
 			setState(73);
-			match(T__2);
+			match(LPAREN);
 			setState(74);
 			expression(0);
 			setState(75);
-			match(T__3);
+			match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -741,14 +757,21 @@ public class RALIParser extends Parser {
 	public static class RenameContext extends ParserRuleContext {
 		public AliasContext alias;
 		public List<AliasContext> aliases = new ArrayList<AliasContext>();
+		public TerminalNode RENAME() { return getToken(RALIParser.RENAME, 0); }
+		public TerminalNode LPAREN() { return getToken(RALIParser.LPAREN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode RPAREN() { return getToken(RALIParser.RPAREN, 0); }
 		public List<AliasContext> alias() {
 			return getRuleContexts(AliasContext.class);
 		}
 		public AliasContext alias(int i) {
 			return getRuleContext(AliasContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(RALIParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(RALIParser.COMMA, i);
 		}
 		public RenameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -777,18 +800,18 @@ public class RALIParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(77);
-			match(T__10);
+			match(RENAME);
 			setState(78);
 			((RenameContext)_localctx).alias = alias();
 			((RenameContext)_localctx).aliases.add(((RenameContext)_localctx).alias);
 			setState(83);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__11) {
+			while (_la==COMMA) {
 				{
 				{
 				setState(79);
-				match(T__11);
+				match(COMMA);
 				setState(80);
 				((RenameContext)_localctx).alias = alias();
 				((RenameContext)_localctx).aliases.add(((RenameContext)_localctx).alias);
@@ -799,11 +822,11 @@ public class RALIParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(86);
-			match(T__2);
+			match(LPAREN);
 			setState(87);
 			expression(0);
 			setState(88);
-			match(T__3);
+			match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -823,6 +846,7 @@ public class RALIParser extends Parser {
 		public TerminalNode LABEL(int i) {
 			return getToken(RALIParser.LABEL, i);
 		}
+		public TerminalNode LEFTARROW() { return getToken(RALIParser.LEFTARROW, 0); }
 		public AliasContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -851,7 +875,7 @@ public class RALIParser extends Parser {
 			setState(90);
 			match(LABEL);
 			setState(91);
-			match(T__12);
+			match(LEFTARROW);
 			setState(92);
 			match(LABEL);
 			}
@@ -882,6 +906,7 @@ public class RALIParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class NegationContext extends ConditionContext {
 		public ConditionContext cond;
+		public TerminalNode NOT() { return getToken(RALIParser.NOT, 0); }
 		public ConditionContext condition() {
 			return getRuleContext(ConditionContext.class,0);
 		}
@@ -911,6 +936,7 @@ public class RALIParser extends Parser {
 		public ConditionContext condition(int i) {
 			return getRuleContext(ConditionContext.class,i);
 		}
+		public TerminalNode OR() { return getToken(RALIParser.OR, 0); }
 		public OrContext(ConditionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -937,6 +963,7 @@ public class RALIParser extends Parser {
 		public ConditionContext condition(int i) {
 			return getRuleContext(ConditionContext.class,i);
 		}
+		public TerminalNode AND() { return getToken(RALIParser.AND, 0); }
 		public AndContext(ConditionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -974,9 +1001,11 @@ public class RALIParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class CondContext extends ConditionContext {
+		public TerminalNode LPAREN() { return getToken(RALIParser.LPAREN, 0); }
 		public ConditionContext condition() {
 			return getRuleContext(ConditionContext.class,0);
 		}
+		public TerminalNode RPAREN() { return getToken(RALIParser.RPAREN, 0); }
 		public CondContext(ConditionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -1025,28 +1054,28 @@ public class RALIParser extends Parser {
 				atomicformula();
 				}
 				break;
-			case T__13:
+			case NOT:
 				{
 				_localctx = new NegationContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(96);
-				match(T__13);
+				match(NOT);
 				setState(97);
 				((NegationContext)_localctx).cond = condition(4);
 				}
 				break;
-			case T__2:
+			case LPAREN:
 				{
 				_localctx = new CondContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(98);
-				match(T__2);
+				match(LPAREN);
 				setState(99);
 				condition(0);
 				setState(100);
-				match(T__3);
+				match(RPAREN);
 				}
 				break;
 			default:
@@ -1072,7 +1101,7 @@ public class RALIParser extends Parser {
 						setState(104);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(105);
-						((AndContext)_localctx).op = match(T__14);
+						((AndContext)_localctx).op = match(AND);
 						setState(106);
 						((AndContext)_localctx).right = condition(4);
 						}
@@ -1085,7 +1114,7 @@ public class RALIParser extends Parser {
 						setState(107);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(108);
-						((OrContext)_localctx).op = match(T__15);
+						((OrContext)_localctx).op = match(OR);
 						setState(109);
 						((OrContext)_localctx).right = condition(3);
 						}
@@ -1121,6 +1150,12 @@ public class RALIParser extends Parser {
 		public AttributeorvalueContext attributeorvalue(int i) {
 			return getRuleContext(AttributeorvalueContext.class,i);
 		}
+		public TerminalNode EQ() { return getToken(RALIParser.EQ, 0); }
+		public TerminalNode LT() { return getToken(RALIParser.LT, 0); }
+		public TerminalNode LTE() { return getToken(RALIParser.LTE, 0); }
+		public TerminalNode GT() { return getToken(RALIParser.GT, 0); }
+		public TerminalNode GTE() { return getToken(RALIParser.GTE, 0); }
+		public TerminalNode NEQ() { return getToken(RALIParser.NEQ, 0); }
 		public AtomicformulaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1152,7 +1187,7 @@ public class RALIParser extends Parser {
 			setState(116);
 			((AtomicformulaContext)_localctx).op = _input.LT(1);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 4063234L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 4128768L) != 0)) ) {
 				((AtomicformulaContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 			}
 			else {
@@ -1244,12 +1279,21 @@ public class RALIParser extends Parser {
 	public static class ProjectionContext extends ParserRuleContext {
 		public Token LABEL;
 		public List<Token> attributes = new ArrayList<Token>();
+		public TerminalNode PROJECT() { return getToken(RALIParser.PROJECT, 0); }
+		public TerminalNode LCURLY() { return getToken(RALIParser.LCURLY, 0); }
+		public TerminalNode RCURLY() { return getToken(RALIParser.RCURLY, 0); }
+		public TerminalNode LPAREN() { return getToken(RALIParser.LPAREN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode RPAREN() { return getToken(RALIParser.RPAREN, 0); }
 		public List<TerminalNode> LABEL() { return getTokens(RALIParser.LABEL); }
 		public TerminalNode LABEL(int i) {
 			return getToken(RALIParser.LABEL, i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(RALIParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(RALIParser.COMMA, i);
 		}
 		public ProjectionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1278,20 +1322,20 @@ public class RALIParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(123);
-			match(T__21);
+			match(PROJECT);
 			setState(124);
-			match(T__22);
+			match(LCURLY);
 			setState(125);
 			((ProjectionContext)_localctx).LABEL = match(LABEL);
 			((ProjectionContext)_localctx).attributes.add(((ProjectionContext)_localctx).LABEL);
 			setState(130);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__11) {
+			while (_la==COMMA) {
 				{
 				{
 				setState(126);
-				match(T__11);
+				match(COMMA);
 				setState(127);
 				((ProjectionContext)_localctx).LABEL = match(LABEL);
 				((ProjectionContext)_localctx).attributes.add(((ProjectionContext)_localctx).LABEL);
@@ -1302,13 +1346,13 @@ public class RALIParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(133);
-			match(T__23);
+			match(RCURLY);
 			setState(134);
-			match(T__2);
+			match(LPAREN);
 			setState(135);
 			expression(0);
 			setState(136);
-			match(T__3);
+			match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1328,11 +1372,19 @@ public class RALIParser extends Parser {
 		public List<AttributeContext> attributes = new ArrayList<AttributeContext>();
 		public TupleContext tuple;
 		public List<TupleContext> tuples = new ArrayList<TupleContext>();
+		public TerminalNode LBRACKET() { return getToken(RALIParser.LBRACKET, 0); }
+		public TerminalNode RBRACKET() { return getToken(RALIParser.RBRACKET, 0); }
+		public TerminalNode LCURLY() { return getToken(RALIParser.LCURLY, 0); }
+		public TerminalNode RCURLY() { return getToken(RALIParser.RCURLY, 0); }
 		public List<AttributeContext> attribute() {
 			return getRuleContexts(AttributeContext.class);
 		}
 		public AttributeContext attribute(int i) {
 			return getRuleContext(AttributeContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(RALIParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(RALIParser.COMMA, i);
 		}
 		public List<TupleContext> tuple() {
 			return getRuleContexts(TupleContext.class);
@@ -1367,18 +1419,18 @@ public class RALIParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(138);
-			match(T__24);
+			match(LBRACKET);
 			setState(139);
 			((InlinerelationContext)_localctx).attribute = attribute();
 			((InlinerelationContext)_localctx).attributes.add(((InlinerelationContext)_localctx).attribute);
 			setState(144);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__11) {
+			while (_la==COMMA) {
 				{
 				{
 				setState(140);
-				match(T__11);
+				match(COMMA);
 				setState(141);
 				((InlinerelationContext)_localctx).attribute = attribute();
 				((InlinerelationContext)_localctx).attributes.add(((InlinerelationContext)_localctx).attribute);
@@ -1389,13 +1441,13 @@ public class RALIParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(147);
-			match(T__25);
+			match(RBRACKET);
 			setState(148);
-			match(T__22);
+			match(LCURLY);
 			setState(157);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__2) {
+			if (_la==LPAREN) {
 				{
 				setState(149);
 				((InlinerelationContext)_localctx).tuple = tuple();
@@ -1403,11 +1455,11 @@ public class RALIParser extends Parser {
 				setState(154);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				while (_la==T__11) {
+				while (_la==COMMA) {
 					{
 					{
 					setState(150);
-					match(T__11);
+					match(COMMA);
 					setState(151);
 					((InlinerelationContext)_localctx).tuple = tuple();
 					((InlinerelationContext)_localctx).tuples.add(((InlinerelationContext)_localctx).tuple);
@@ -1421,7 +1473,7 @@ public class RALIParser extends Parser {
 			}
 
 			setState(159);
-			match(T__23);
+			match(RCURLY);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1440,6 +1492,11 @@ public class RALIParser extends Parser {
 		public Token label;
 		public Token type;
 		public TerminalNode LABEL() { return getToken(RALIParser.LABEL, 0); }
+		public TerminalNode COLON() { return getToken(RALIParser.COLON, 0); }
+		public TerminalNode STRINGTYPE() { return getToken(RALIParser.STRINGTYPE, 0); }
+		public TerminalNode INTEGERTYPE() { return getToken(RALIParser.INTEGERTYPE, 0); }
+		public TerminalNode DECIMALTYPE() { return getToken(RALIParser.DECIMALTYPE, 0); }
+		public TerminalNode DATETYPE() { return getToken(RALIParser.DATETYPE, 0); }
 		public AttributeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1471,14 +1528,14 @@ public class RALIParser extends Parser {
 			setState(164);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__26) {
+			if (_la==COLON) {
 				{
 				setState(162);
-				match(T__26);
+				match(COLON);
 				setState(163);
 				((AttributeContext)_localctx).type = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 4026531840L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 61440L) != 0)) ) {
 					((AttributeContext)_localctx).type = (Token)_errHandler.recoverInline(this);
 				}
 				else {
@@ -1506,11 +1563,17 @@ public class RALIParser extends Parser {
 	public static class TupleContext extends ParserRuleContext {
 		public ValueContext value;
 		public List<ValueContext> values = new ArrayList<ValueContext>();
+		public TerminalNode LPAREN() { return getToken(RALIParser.LPAREN, 0); }
+		public TerminalNode RPAREN() { return getToken(RALIParser.RPAREN, 0); }
 		public List<ValueContext> value() {
 			return getRuleContexts(ValueContext.class);
 		}
 		public ValueContext value(int i) {
 			return getRuleContext(ValueContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(RALIParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(RALIParser.COMMA, i);
 		}
 		public TupleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1539,18 +1602,18 @@ public class RALIParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(166);
-			match(T__2);
+			match(LPAREN);
 			setState(167);
 			((TupleContext)_localctx).value = value();
 			((TupleContext)_localctx).values.add(((TupleContext)_localctx).value);
 			setState(172);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__11) {
+			while (_la==COMMA) {
 				{
 				{
 				setState(168);
-				match(T__11);
+				match(COMMA);
 				setState(169);
 				((TupleContext)_localctx).value = value();
 				((TupleContext)_localctx).values.add(((TupleContext)_localctx).value);
@@ -1561,7 +1624,7 @@ public class RALIParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(175);
-			match(T__3);
+			match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1609,7 +1672,7 @@ public class RALIParser extends Parser {
 			{
 			setState(177);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 257698037760L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 515396075520L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1661,7 +1724,7 @@ public class RALIParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001&\u00b4\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\'\u00b4\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -1689,85 +1752,86 @@ public class RALIParser extends Parser {
 		"\f\u00a5\b\f\u0001\r\u0001\r\u0001\r\u0001\r\u0005\r\u00ab\b\r\n\r\f\r"+
 		"\u00ae\t\r\u0001\r\u0001\r\u0001\u000e\u0001\u000e\u0001\u000e\u0000\u0002"+
 		"\u0002\u000e\u000f\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014"+
-		"\u0016\u0018\u001a\u001c\u0000\u0005\u0001\u0000\u0005\u0007\u0001\u0000"+
-		"\b\t\u0002\u0000\u0001\u0001\u0011\u0015\u0001\u0000\u001c\u001f\u0001"+
-		"\u0000\"%\u00ba\u0000\"\u0001\u0000\u0000\u0000\u0002.\u0001\u0000\u0000"+
+		"\u0016\u0018\u001a\u001c\u0000\u0005\u0002\u0000\u0005\u0006\b\b\u0002"+
+		"\u0000\u0007\u0007\n\n\u0001\u0000\u0010\u0015\u0001\u0000\f\u000f\u0001"+
+		"\u0000#&\u00ba\u0000\"\u0001\u0000\u0000\u0000\u0002.\u0001\u0000\u0000"+
 		"\u0000\u0004C\u0001\u0000\u0000\u0000\u0006E\u0001\u0000\u0000\u0000\b"+
 		"G\u0001\u0000\u0000\u0000\nM\u0001\u0000\u0000\u0000\fZ\u0001\u0000\u0000"+
 		"\u0000\u000ef\u0001\u0000\u0000\u0000\u0010s\u0001\u0000\u0000\u0000\u0012"+
 		"y\u0001\u0000\u0000\u0000\u0014{\u0001\u0000\u0000\u0000\u0016\u008a\u0001"+
 		"\u0000\u0000\u0000\u0018\u00a1\u0001\u0000\u0000\u0000\u001a\u00a6\u0001"+
 		"\u0000\u0000\u0000\u001c\u00b1\u0001\u0000\u0000\u0000\u001e\u001f\u0005"+
-		"!\u0000\u0000\u001f \u0005\u0001\u0000\u0000 #\u0003\u0002\u0001\u0000"+
+		"\"\u0000\u0000\u001f \u0005\u0010\u0000\u0000 #\u0003\u0002\u0001\u0000"+
 		"!#\u0003\u0002\u0001\u0000\"\u001e\u0001\u0000\u0000\u0000\"!\u0001\u0000"+
 		"\u0000\u0000#\u0001\u0001\u0000\u0000\u0000$%\u0006\u0001\uffff\uffff"+
-		"\u0000%/\u0005!\u0000\u0000&/\u0003\u0016\u000b\u0000\'/\u0003\u0014\n"+
-		"\u0000(/\u0003\b\u0004\u0000)/\u0003\n\u0005\u0000*+\u0005\u0003\u0000"+
-		"\u0000+,\u0003\u0002\u0001\u0000,-\u0005\u0004\u0000\u0000-/\u0001\u0000"+
+		"\u0000%/\u0005\"\u0000\u0000&/\u0003\u0016\u000b\u0000\'/\u0003\u0014"+
+		"\n\u0000(/\u0003\b\u0004\u0000)/\u0003\n\u0005\u0000*+\u0005\u0018\u0000"+
+		"\u0000+,\u0003\u0002\u0001\u0000,-\u0005\u0019\u0000\u0000-/\u0001\u0000"+
 		"\u0000\u0000.$\u0001\u0000\u0000\u0000.&\u0001\u0000\u0000\u0000.\'\u0001"+
 		"\u0000\u0000\u0000.(\u0001\u0000\u0000\u0000.)\u0001\u0000\u0000\u0000"+
 		".*\u0001\u0000\u0000\u0000/@\u0001\u0000\u0000\u000001\n\u0004\u0000\u0000"+
 		"13\u0003\u0004\u0002\u000024\u0003\u000e\u0007\u000032\u0001\u0000\u0000"+
 		"\u000034\u0001\u0000\u0000\u000045\u0001\u0000\u0000\u000056\u0003\u0002"+
-		"\u0001\u00056?\u0001\u0000\u0000\u000078\n\u0003\u0000\u000089\u0005\u0002"+
+		"\u0001\u00056?\u0001\u0000\u0000\u000078\n\u0003\u0000\u000089\u0005\u0004"+
 		"\u0000\u00009?\u0003\u0002\u0001\u0004:;\n\u0002\u0000\u0000;<\u0003\u0006"+
 		"\u0003\u0000<=\u0003\u0002\u0001\u0003=?\u0001\u0000\u0000\u0000>0\u0001"+
 		"\u0000\u0000\u0000>7\u0001\u0000\u0000\u0000>:\u0001\u0000\u0000\u0000"+
 		"?B\u0001\u0000\u0000\u0000@>\u0001\u0000\u0000\u0000@A\u0001\u0000\u0000"+
 		"\u0000A\u0003\u0001\u0000\u0000\u0000B@\u0001\u0000\u0000\u0000CD\u0007"+
 		"\u0000\u0000\u0000D\u0005\u0001\u0000\u0000\u0000EF\u0007\u0001\u0000"+
-		"\u0000F\u0007\u0001\u0000\u0000\u0000GH\u0005\n\u0000\u0000HI\u0003\u000e"+
-		"\u0007\u0000IJ\u0005\u0003\u0000\u0000JK\u0003\u0002\u0001\u0000KL\u0005"+
-		"\u0004\u0000\u0000L\t\u0001\u0000\u0000\u0000MN\u0005\u000b\u0000\u0000"+
-		"NS\u0003\f\u0006\u0000OP\u0005\f\u0000\u0000PR\u0003\f\u0006\u0000QO\u0001"+
-		"\u0000\u0000\u0000RU\u0001\u0000\u0000\u0000SQ\u0001\u0000\u0000\u0000"+
-		"ST\u0001\u0000\u0000\u0000TV\u0001\u0000\u0000\u0000US\u0001\u0000\u0000"+
-		"\u0000VW\u0005\u0003\u0000\u0000WX\u0003\u0002\u0001\u0000XY\u0005\u0004"+
-		"\u0000\u0000Y\u000b\u0001\u0000\u0000\u0000Z[\u0005!\u0000\u0000[\\\u0005"+
-		"\r\u0000\u0000\\]\u0005!\u0000\u0000]\r\u0001\u0000\u0000\u0000^_\u0006"+
-		"\u0007\uffff\uffff\u0000_g\u0003\u0010\b\u0000`a\u0005\u000e\u0000\u0000"+
-		"ag\u0003\u000e\u0007\u0004bc\u0005\u0003\u0000\u0000cd\u0003\u000e\u0007"+
-		"\u0000de\u0005\u0004\u0000\u0000eg\u0001\u0000\u0000\u0000f^\u0001\u0000"+
-		"\u0000\u0000f`\u0001\u0000\u0000\u0000fb\u0001\u0000\u0000\u0000gp\u0001"+
-		"\u0000\u0000\u0000hi\n\u0003\u0000\u0000ij\u0005\u000f\u0000\u0000jo\u0003"+
-		"\u000e\u0007\u0004kl\n\u0002\u0000\u0000lm\u0005\u0010\u0000\u0000mo\u0003"+
-		"\u000e\u0007\u0003nh\u0001\u0000\u0000\u0000nk\u0001\u0000\u0000\u0000"+
-		"or\u0001\u0000\u0000\u0000pn\u0001\u0000\u0000\u0000pq\u0001\u0000\u0000"+
-		"\u0000q\u000f\u0001\u0000\u0000\u0000rp\u0001\u0000\u0000\u0000st\u0003"+
-		"\u0012\t\u0000tu\u0007\u0002\u0000\u0000uv\u0003\u0012\t\u0000v\u0011"+
-		"\u0001\u0000\u0000\u0000wz\u0005!\u0000\u0000xz\u0003\u001c\u000e\u0000"+
-		"yw\u0001\u0000\u0000\u0000yx\u0001\u0000\u0000\u0000z\u0013\u0001\u0000"+
-		"\u0000\u0000{|\u0005\u0016\u0000\u0000|}\u0005\u0017\u0000\u0000}\u0082"+
-		"\u0005!\u0000\u0000~\u007f\u0005\f\u0000\u0000\u007f\u0081\u0005!\u0000"+
-		"\u0000\u0080~\u0001\u0000\u0000\u0000\u0081\u0084\u0001\u0000\u0000\u0000"+
-		"\u0082\u0080\u0001\u0000\u0000\u0000\u0082\u0083\u0001\u0000\u0000\u0000"+
-		"\u0083\u0085\u0001\u0000\u0000\u0000\u0084\u0082\u0001\u0000\u0000\u0000"+
-		"\u0085\u0086\u0005\u0018\u0000\u0000\u0086\u0087\u0005\u0003\u0000\u0000"+
-		"\u0087\u0088\u0003\u0002\u0001\u0000\u0088\u0089\u0005\u0004\u0000\u0000"+
-		"\u0089\u0015\u0001\u0000\u0000\u0000\u008a\u008b\u0005\u0019\u0000\u0000"+
-		"\u008b\u0090\u0003\u0018\f\u0000\u008c\u008d\u0005\f\u0000\u0000\u008d"+
-		"\u008f\u0003\u0018\f\u0000\u008e\u008c\u0001\u0000\u0000\u0000\u008f\u0092"+
-		"\u0001\u0000\u0000\u0000\u0090\u008e\u0001\u0000\u0000\u0000\u0090\u0091"+
-		"\u0001\u0000\u0000\u0000\u0091\u0093\u0001\u0000\u0000\u0000\u0092\u0090"+
-		"\u0001\u0000\u0000\u0000\u0093\u0094\u0005\u001a\u0000\u0000\u0094\u009d"+
-		"\u0005\u0017\u0000\u0000\u0095\u009a\u0003\u001a\r\u0000\u0096\u0097\u0005"+
-		"\f\u0000\u0000\u0097\u0099\u0003\u001a\r\u0000\u0098\u0096\u0001\u0000"+
-		"\u0000\u0000\u0099\u009c\u0001\u0000\u0000\u0000\u009a\u0098\u0001\u0000"+
-		"\u0000\u0000\u009a\u009b\u0001\u0000\u0000\u0000\u009b\u009e\u0001\u0000"+
-		"\u0000\u0000\u009c\u009a\u0001\u0000\u0000\u0000\u009d\u0095\u0001\u0000"+
-		"\u0000\u0000\u009d\u009e\u0001\u0000\u0000\u0000\u009e\u009f\u0001\u0000"+
-		"\u0000\u0000\u009f\u00a0\u0005\u0018\u0000\u0000\u00a0\u0017\u0001\u0000"+
-		"\u0000\u0000\u00a1\u00a4\u0005!\u0000\u0000\u00a2\u00a3\u0005\u001b\u0000"+
-		"\u0000\u00a3\u00a5\u0007\u0003\u0000\u0000\u00a4\u00a2\u0001\u0000\u0000"+
-		"\u0000\u00a4\u00a5\u0001\u0000\u0000\u0000\u00a5\u0019\u0001\u0000\u0000"+
-		"\u0000\u00a6\u00a7\u0005\u0003\u0000\u0000\u00a7\u00ac\u0003\u001c\u000e"+
-		"\u0000\u00a8\u00a9\u0005\f\u0000\u0000\u00a9\u00ab\u0003\u001c\u000e\u0000"+
-		"\u00aa\u00a8\u0001\u0000\u0000\u0000\u00ab\u00ae\u0001\u0000\u0000\u0000"+
-		"\u00ac\u00aa\u0001\u0000\u0000\u0000\u00ac\u00ad\u0001\u0000\u0000\u0000"+
-		"\u00ad\u00af\u0001\u0000\u0000\u0000\u00ae\u00ac\u0001\u0000\u0000\u0000"+
-		"\u00af\u00b0\u0005\u0004\u0000\u0000\u00b0\u001b\u0001\u0000\u0000\u0000"+
-		"\u00b1\u00b2\u0007\u0004\u0000\u0000\u00b2\u001d\u0001\u0000\u0000\u0000"+
-		"\u0010\".3>@Sfnpy\u0082\u0090\u009a\u009d\u00a4\u00ac";
+		"\u0000F\u0007\u0001\u0000\u0000\u0000GH\u0005\u0001\u0000\u0000HI\u0003"+
+		"\u000e\u0007\u0000IJ\u0005\u0018\u0000\u0000JK\u0003\u0002\u0001\u0000"+
+		"KL\u0005\u0019\u0000\u0000L\t\u0001\u0000\u0000\u0000MN\u0005\u0002\u0000"+
+		"\u0000NS\u0003\f\u0006\u0000OP\u0005\u0017\u0000\u0000PR\u0003\f\u0006"+
+		"\u0000QO\u0001\u0000\u0000\u0000RU\u0001\u0000\u0000\u0000SQ\u0001\u0000"+
+		"\u0000\u0000ST\u0001\u0000\u0000\u0000TV\u0001\u0000\u0000\u0000US\u0001"+
+		"\u0000\u0000\u0000VW\u0005\u0018\u0000\u0000WX\u0003\u0002\u0001\u0000"+
+		"XY\u0005\u0019\u0000\u0000Y\u000b\u0001\u0000\u0000\u0000Z[\u0005\"\u0000"+
+		"\u0000[\\\u0005\u0016\u0000\u0000\\]\u0005\"\u0000\u0000]\r\u0001\u0000"+
+		"\u0000\u0000^_\u0006\u0007\uffff\uffff\u0000_g\u0003\u0010\b\u0000`a\u0005"+
+		"!\u0000\u0000ag\u0003\u000e\u0007\u0004bc\u0005\u0018\u0000\u0000cd\u0003"+
+		"\u000e\u0007\u0000de\u0005\u0019\u0000\u0000eg\u0001\u0000\u0000\u0000"+
+		"f^\u0001\u0000\u0000\u0000f`\u0001\u0000\u0000\u0000fb\u0001\u0000\u0000"+
+		"\u0000gp\u0001\u0000\u0000\u0000hi\n\u0003\u0000\u0000ij\u0005\u001f\u0000"+
+		"\u0000jo\u0003\u000e\u0007\u0004kl\n\u0002\u0000\u0000lm\u0005 \u0000"+
+		"\u0000mo\u0003\u000e\u0007\u0003nh\u0001\u0000\u0000\u0000nk\u0001\u0000"+
+		"\u0000\u0000or\u0001\u0000\u0000\u0000pn\u0001\u0000\u0000\u0000pq\u0001"+
+		"\u0000\u0000\u0000q\u000f\u0001\u0000\u0000\u0000rp\u0001\u0000\u0000"+
+		"\u0000st\u0003\u0012\t\u0000tu\u0007\u0002\u0000\u0000uv\u0003\u0012\t"+
+		"\u0000v\u0011\u0001\u0000\u0000\u0000wz\u0005\"\u0000\u0000xz\u0003\u001c"+
+		"\u000e\u0000yw\u0001\u0000\u0000\u0000yx\u0001\u0000\u0000\u0000z\u0013"+
+		"\u0001\u0000\u0000\u0000{|\u0005\u0003\u0000\u0000|}\u0005\u001a\u0000"+
+		"\u0000}\u0082\u0005\"\u0000\u0000~\u007f\u0005\u0017\u0000\u0000\u007f"+
+		"\u0081\u0005\"\u0000\u0000\u0080~\u0001\u0000\u0000\u0000\u0081\u0084"+
+		"\u0001\u0000\u0000\u0000\u0082\u0080\u0001\u0000\u0000\u0000\u0082\u0083"+
+		"\u0001\u0000\u0000\u0000\u0083\u0085\u0001\u0000\u0000\u0000\u0084\u0082"+
+		"\u0001\u0000\u0000\u0000\u0085\u0086\u0005\u001b\u0000\u0000\u0086\u0087"+
+		"\u0005\u0018\u0000\u0000\u0087\u0088\u0003\u0002\u0001\u0000\u0088\u0089"+
+		"\u0005\u0019\u0000\u0000\u0089\u0015\u0001\u0000\u0000\u0000\u008a\u008b"+
+		"\u0005\u001c\u0000\u0000\u008b\u0090\u0003\u0018\f\u0000\u008c\u008d\u0005"+
+		"\u0017\u0000\u0000\u008d\u008f\u0003\u0018\f\u0000\u008e\u008c\u0001\u0000"+
+		"\u0000\u0000\u008f\u0092\u0001\u0000\u0000\u0000\u0090\u008e\u0001\u0000"+
+		"\u0000\u0000\u0090\u0091\u0001\u0000\u0000\u0000\u0091\u0093\u0001\u0000"+
+		"\u0000\u0000\u0092\u0090\u0001\u0000\u0000\u0000\u0093\u0094\u0005\u001d"+
+		"\u0000\u0000\u0094\u009d\u0005\u001a\u0000\u0000\u0095\u009a\u0003\u001a"+
+		"\r\u0000\u0096\u0097\u0005\u0017\u0000\u0000\u0097\u0099\u0003\u001a\r"+
+		"\u0000\u0098\u0096\u0001\u0000\u0000\u0000\u0099\u009c\u0001\u0000\u0000"+
+		"\u0000\u009a\u0098\u0001\u0000\u0000\u0000\u009a\u009b\u0001\u0000\u0000"+
+		"\u0000\u009b\u009e\u0001\u0000\u0000\u0000\u009c\u009a\u0001\u0000\u0000"+
+		"\u0000\u009d\u0095\u0001\u0000\u0000\u0000\u009d\u009e\u0001\u0000\u0000"+
+		"\u0000\u009e\u009f\u0001\u0000\u0000\u0000\u009f\u00a0\u0005\u001b\u0000"+
+		"\u0000\u00a0\u0017\u0001\u0000\u0000\u0000\u00a1\u00a4\u0005\"\u0000\u0000"+
+		"\u00a2\u00a3\u0005\u001e\u0000\u0000\u00a3\u00a5\u0007\u0003\u0000\u0000"+
+		"\u00a4\u00a2\u0001\u0000\u0000\u0000\u00a4\u00a5\u0001\u0000\u0000\u0000"+
+		"\u00a5\u0019\u0001\u0000\u0000\u0000\u00a6\u00a7\u0005\u0018\u0000\u0000"+
+		"\u00a7\u00ac\u0003\u001c\u000e\u0000\u00a8\u00a9\u0005\u0017\u0000\u0000"+
+		"\u00a9\u00ab\u0003\u001c\u000e\u0000\u00aa\u00a8\u0001\u0000\u0000\u0000"+
+		"\u00ab\u00ae\u0001\u0000\u0000\u0000\u00ac\u00aa\u0001\u0000\u0000\u0000"+
+		"\u00ac\u00ad\u0001\u0000\u0000\u0000\u00ad\u00af\u0001\u0000\u0000\u0000"+
+		"\u00ae\u00ac\u0001\u0000\u0000\u0000\u00af\u00b0\u0005\u0019\u0000\u0000"+
+		"\u00b0\u001b\u0001\u0000\u0000\u0000\u00b1\u00b2\u0007\u0004\u0000\u0000"+
+		"\u00b2\u001d\u0001\u0000\u0000\u0000\u0010\".3>@Sfnpy\u0082\u0090\u009a"+
+		"\u009d\u00a4\u00ac";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
