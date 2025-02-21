@@ -113,7 +113,10 @@ public class RALIController {
 		statement.close();
 	}
 	
-	public Either execute(String command) throws SQLException {		
+	public Either execute(String command) throws SQLException {
+		if (command != null && !command.endsWith(";"))
+			command += ";";
+
 		CharStream is = CharStreams.fromString(command);
 		RALILexer lexer = new RALILexer(is);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

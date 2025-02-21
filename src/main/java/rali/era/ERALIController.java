@@ -116,7 +116,10 @@ public class ERALIController {
 	}
 	
 	public Either execute(String command) throws SQLException {				
-		try {			
+		try {
+			if (command != null && !command.endsWith(";"))
+				command += ";";
+
 			CharStream is = CharStreams.fromString(command);
 			ERALILexer lexer = new ERALILexer(is);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -165,7 +168,7 @@ public class ERALIController {
 				msg = "Division by zero in one of the expressions.";
 			}
 			else if(msg.contains("Feature not supported")) {
-				msg = "Arethmetic expressions on strings and dates are not supported.";
+				msg = "Arithmetic expressions on strings and dates are not supported.";
 			}
 			
 			return new Left(msg);
@@ -203,7 +206,7 @@ public class ERALIController {
 		}
 		
 		// If the result set is empty, then only show the headers
-		if(records.size() == 0) {
+		if(records.isEmpty()) {
 			Object[][] tmp = { headers };
 			return AsciiTable.getTable(tmp);
 		}
