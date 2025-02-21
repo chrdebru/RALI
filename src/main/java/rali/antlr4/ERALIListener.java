@@ -56,18 +56,6 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitConstant(ERALIParser.ConstantContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Parens}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterParens(ERALIParser.ParensContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Parens}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitParens(ERALIParser.ParensContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code Sigma}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -116,6 +104,18 @@ public interface ERALIListener extends ParseTreeListener {
 	 */
 	void exitSetDifferenceOrUnion(ERALIParser.SetDifferenceOrUnionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code Simple}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimple(ERALIParser.SimpleContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Simple}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimple(ERALIParser.SimpleContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -139,18 +139,6 @@ public interface ERALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitGamma(ERALIParser.GammaContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterRelation(ERALIParser.RelationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitRelation(ERALIParser.RelationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Delta}
 	 * labeled alternative in {@link ERALIParser#expression}.
@@ -199,6 +187,30 @@ public interface ERALIListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPi(ERALIParser.PiContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Relation}
+	 * labeled alternative in {@link ERALIParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelation(ERALIParser.RelationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Relation}
+	 * labeled alternative in {@link ERALIParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelation(ERALIParser.RelationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Parens}
+	 * labeled alternative in {@link ERALIParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterParens(ERALIParser.ParensContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Parens}
+	 * labeled alternative in {@link ERALIParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitParens(ERALIParser.ParensContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ERALIParser#distinct}.
 	 * @param ctx the parse tree

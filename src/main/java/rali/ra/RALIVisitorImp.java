@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import rali.antlr4.RALIBaseVisitor;
+import rali.antlr4.RALIParser;
 import rali.antlr4.RALIParser.AliasContext;
 import rali.antlr4.RALIParser.AndContext;
 import rali.antlr4.RALIParser.AssignmentContext;
@@ -186,7 +187,12 @@ public class RALIVisitorImp extends RALIBaseVisitor<String> {
 		String e = visit(ctx.expression());
 		return String.format("(%s)", e);
 	}
-	
+
+	@Override
+	public String visitQuery(RALIParser.QueryContext ctx) {
+        return visit(ctx.expression());
+	}
+
 	@Override
 	public String visitAssignment(AssignmentContext ctx) {
 		String query = visit(ctx.expression());

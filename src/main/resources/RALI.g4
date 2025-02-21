@@ -5,8 +5,8 @@ grammar RALI;
  */
 
 statement 
-	: label=LABEL EQ expression								    # Assignment
-	| expression												# Query
+	: label=LABEL EQ expression	SEMICOLON					    # Assignment
+	| expression SEMICOLON										# Query
 ;
 
 expression 
@@ -151,6 +151,7 @@ RCURLY : '}' ;
 LBRACKET : '[' ;
 RBRACKET : ']' ;
 COLON : ':' ;
+SEMICOLON : ';';
 
 AND : 'AND' ;
 OR : 'OR' ;

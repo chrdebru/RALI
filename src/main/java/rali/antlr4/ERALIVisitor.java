@@ -39,13 +39,6 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstant(ERALIParser.ConstantContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Parens}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParens(ERALIParser.ParensContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code Sigma}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -74,6 +67,13 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSetDifferenceOrUnion(ERALIParser.SetDifferenceOrUnionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code Simple}
+	 * labeled alternative in {@link ERALIParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimple(ERALIParser.SimpleContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Joins}
 	 * labeled alternative in {@link ERALIParser#expression}.
 	 * @param ctx the parse tree
@@ -87,13 +87,6 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGamma(ERALIParser.GammaContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Relation}
-	 * labeled alternative in {@link ERALIParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelation(ERALIParser.RelationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Delta}
 	 * labeled alternative in {@link ERALIParser#expression}.
@@ -122,6 +115,20 @@ public interface ERALIVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPi(ERALIParser.PiContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Relation}
+	 * labeled alternative in {@link ERALIParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelation(ERALIParser.RelationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Parens}
+	 * labeled alternative in {@link ERALIParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParens(ERALIParser.ParensContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ERALIParser#distinct}.
 	 * @param ctx the parse tree

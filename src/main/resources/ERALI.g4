@@ -5,12 +5,12 @@ grammar ERALI;
  */
 
 statement 
-	: label=LABEL EQ expression							    	# Assignment
-	| expression												# Query
+	: label=LABEL EQ expression	SEMICOLON	        	    	# Assignment
+	| expression SEMICOLON										# Query
 ;
 
 expression 
-	: LABEL														# Relation 
+	: term														# Simple
 	| inlinerelation											# Constant
 	
 	// Unary operators first
@@ -41,11 +41,14 @@ expression
 	| left=expression 
 	  SET operator=diffUnionOperator
 	  right=expression 	    									# SetDifferenceOrUnion
-	  
-	
-	| LPAREN expression RPAREN									# Parens
+
 	;
-	
+
+term:
+    LABEL                                                       # Relation
+	| LPAREN expression RPAREN									# Parens
+;
+
 distinct :
 	DISTINCT LPAREN expression RPAREN
 ;
@@ -221,6 +224,7 @@ RCURLY : '}' ;
 LBRACKET : '[' ;
 RBRACKET : ']' ;
 COLON : ':' ;
+SEMICOLON : ';';
 
 AND : 'AND' ;
 OR : 'OR' ;

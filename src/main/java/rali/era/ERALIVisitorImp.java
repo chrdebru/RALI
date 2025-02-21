@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import rali.antlr4.ERALIBaseVisitor;
+import rali.antlr4.ERALIParser.QueryContext;
 import rali.antlr4.ERALIParser.AggregationContext;
 import rali.antlr4.ERALIParser.AliasContext;
 import rali.antlr4.ERALIParser.AndContext;
@@ -238,6 +239,11 @@ public class ERALIVisitorImp extends ERALIBaseVisitor<String> {
 	public String visitParens(ParensContext ctx) {
 		String e = visit(ctx.expression());
 		return String.format("(%s)", e);
+	}
+
+	@Override
+	public String visitQuery(QueryContext ctx) {
+		return visit(ctx.expression());
 	}
 
 	@Override
